@@ -179,7 +179,25 @@ const login = async (req, res, next) => {
   }
 };
 
+// @desc    Get authenticated user profile
+// @route   GET /api/auth/profile
+// @access  Private
+const getProfile = async (req, res) => {
+  return res.status(200).json({
+    success: true,
+    message: 'Authenticated user',
+    user: {
+      id: req.user._id,
+      name: req.user.name,
+      email: req.user.email,
+      role: req.user.role,
+    },
+  });
+};
+
 module.exports = {
   signup,
   login,
+  getProfile,
 };
+

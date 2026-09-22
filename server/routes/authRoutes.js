@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { signup, login } = require('../controllers/authController');
+const { signup, login, getProfile } = require('../controllers/authController');
+const { protect } = require('../middleware/authMiddleware');
 
 // @route   POST /api/auth/signup
 // @desc    Register a new user (client or freelancer)
@@ -11,6 +12,11 @@ router.post('/signup', signup);
 // @desc    Authenticate user & get token
 // @access  Public
 router.post('/login', login);
+
+// @route   GET /api/auth/profile
+// @desc    Get authenticated user profile
+// @access  Private
+router.get('/profile', protect, getProfile);
 
 // @route   GET /api/auth/test
 // @desc    Test Auth API route
