@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 // Email regex pattern for validation
@@ -116,6 +117,69 @@ const signup = async (req, res, next) => {
   }
 };
 
+// @desc    Authenticate user & get token
+// @route   POST /api/auth/login
+// @access  Public
+const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    // 1. Validate that email and password are provided
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide both email and password',
+      });
+    }
+
+    const trimmedEmail = email.trim().toLowerCase();
+
+    // 2. Find user by email
+    const user = await User.findOne({ email: trimmedEmail });
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid email or password',
+      });
+    }
+
+    // 3. Compare password with hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid email or password',
+      });
+    }
+
+    // 4. Generate JWT token
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    // 5. Return success response
+    return res.status(200).json({
+      success: true,
+      message: 'Login successful',
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   signup,
+  login,
 };
