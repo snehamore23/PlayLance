@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Application = require('../models/Application');
 const Project = require('../models/Project');
+const createNotification = require('../utils/createNotification');
 
 // ──────────────────────────────────────────────
 // @desc    Create a new application (freelancer applies to a project)
@@ -93,6 +94,16 @@ const createApplication = async (req, res, next) => {
     // 10. Push application ID into the project's applications array
     targetProject.applications.push(application._id);
     await targetProject.save();
+
+    // 11. Send notification to the project owner/client
+    await createNotification({
+      recipient: targetProject.client,
+      sender: req.user._id,
+      type: 'APPLICATION_RECEIVED',
+      message: `New application received for your project "${targetProject.title}"`,
+      relatedProject: targetProject._id,
+      relatedApplication: application._id,
+    });
 
     return res.status(201).json({
       success: true,
@@ -254,6 +265,13 @@ const updateApplicationStatus = async (req, res, next) => {
       project.status = 'in-progress';
       await project.save();
 
+      // Find other pending applications to notify applicants
+      const otherPendingApps = await Application.find({
+        project: application.project,
+        _id: { $ne: application._id },
+        status: 'pending',
+      });
+
       // Reject all other pending applications for this project
       await Application.updateMany(
         {
@@ -263,6 +281,38 @@ const updateApplicationStatus = async (req, res, next) => {
         },
         { $set: { status: 'rejected' } }
       );
+
+      // Send accepted notification to freelancer
+      await createNotification({
+        recipient: application.freelancer,
+        sender: req.user._id,
+        type: 'APPLICATION_ACCEPTED',
+        message: `Your application for "${project.title}" has been accepted!`,
+        relatedProject: project._id,
+        relatedApplication: application._id,
+      });
+
+      // Send rejected notifications to other freelancers
+      for (const rejectedApp of otherPendingApps) {
+        await createNotification({
+          recipient: rejectedApp.freelancer,
+          sender: req.user._id,
+          type: 'APPLICATION_REJECTED',
+          message: `Your application for "${project.title}" was not selected.`,
+          relatedProject: project._id,
+          relatedApplication: rejectedApp._id,
+        });
+      }
+    } else if (status === 'rejected') {
+      // Send rejected notification to freelancer
+      await createNotification({
+        recipient: application.freelancer,
+        sender: req.user._id,
+        type: 'APPLICATION_REJECTED',
+        message: `Your application for "${project.title}" was rejected.`,
+        relatedProject: project._id,
+        relatedApplication: application._id,
+      });
     }
 
     return res.status(200).json({

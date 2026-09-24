@@ -24,7 +24,14 @@ const app = express();
 
 // Standard middleware
 app.use(cors());
-app.use(express.json());
+// Skip JSON parsing for the Stripe webhook route (it needs raw body)
+app.use((req, res, next) => {
+  if (req.originalUrl === '/api/payments/webhook') {
+    next();
+  } else {
+    express.json()(req, res, next);
+  }
+});
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
