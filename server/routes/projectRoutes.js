@@ -7,6 +7,7 @@ const {
   updateProject,
   deleteProject,
 } = require('../controllers/projectController');
+const { getProjectApplications } = require('../controllers/applicationController');
 const { protect } = require('../middleware/authMiddleware');
 const { allowRoles } = require('../middleware/roleMiddleware');
 
@@ -29,6 +30,11 @@ router.get('/test', (req, res) => {
     message: 'Projects API working',
   });
 });
+
+// @route   GET /api/projects/:projectId/applications
+// @desc    Get all applications for a project
+// @access  Private (client — project owner only)
+router.get('/:projectId/applications', protect, allowRoles('client'), getProjectApplications);
 
 // @route   GET /api/projects/:id
 // @desc    Get single project by ID
