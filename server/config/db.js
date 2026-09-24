@@ -5,15 +5,18 @@ const connectDB = async () => {
     const mongoURI = process.env.MONGO_URI;
 
     if (!mongoURI || mongoURI === 'your_mongodb_atlas_connection_string') {
-      console.warn('⚠️  MongoDB URI is not set or is still the placeholder in server/.env.');
-      console.warn('👉 Please update MONGO_URI in server/.env with your MongoDB Atlas connection string.');
+      console.warn('⚠️ MongoDB URI is not set.');
       return;
     }
 
     const conn = await mongoose.connect(mongoURI);
-    console.log(`✅ MongoDB Atlas connected successfully: ${conn.connection.host}`);
+
+    console.log(
+      `✅ MongoDB Atlas connected successfully: ${conn.connection.host}`
+    );
   } catch (error) {
-    console.error(`❌ MongoDB connection error: ${error.message}`);
+    console.error("❌ MongoDB connection error:", error);
+    process.exit(1);
   }
 };
 
