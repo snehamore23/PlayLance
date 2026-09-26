@@ -28,13 +28,15 @@ const recalculateUserRating = async (userId) => {
 // ──────────────────────────────────────────────
 const createReview = async (req, res, next) => {
   try {
-    const { projectId, reviewedUserId, rating, comment } = req.body;
+    const projectId = req.body.project || req.body.projectId;
+    const reviewedUserId = req.body.reviewedUser || req.body.reviewedUserId;
+    const { rating, comment } = req.body;
 
     // 1. Validate required fields
     if (!projectId || !reviewedUserId || rating === undefined) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide projectId, reviewedUserId, and rating',
+        message: 'Please provide project (or projectId), reviewedUser (or reviewedUserId), and rating',
       });
     }
 

@@ -28,15 +28,28 @@ const Profile = () => {
     portfolio: '',
   });
 
+  const [userReviews, setUserReviews] = useState([]);
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         setLoading(true);
         const response = await api.get('/users/profile');
         if (response.data && response.data.success) {
-          setProfile(response.data.user);
+          const uData = response.data.user;
+          setProfile(uData);
           if (setUser) {
-            setUser((prev) => ({ ...prev, ...response.data.user }));
+            setUser((prev) => ({ ...prev, ...uData }));
+          }
+          if (uData._id) {
+            try {
+              const revRes = await api.get(`/reviews/user/${uData._id}`);
+              if (revRes.data && revRes.data.success) {
+                setUserReviews(revRes.data.reviews || []);
+              }
+            } catch (e) {
+              console.error('Error fetching user reviews for profile:', e);
+            }
           }
         }
       } catch (error) {
@@ -486,6 +499,78 @@ const Profile = () => {
 
             {renderPortfolio(profileData.portfolio)}
           </div>
+        </div>
+      )}
+
+      {/* Received Reviews Section */}
+      {!isEditing && (
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <span>⭐</span> Verified Client & Freelancer Reviews ({userReviews.length})
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Contract feedback earned on completed PayLance projects.
+              </p>
+            </div>
+          </div>
+
+          {userReviews.length === 0 ? (
+            <div className="p-8 bg-slate-50 dark:bg-slate-800/40 rounded-xl text-center text-xs text-slate-500 dark:text-slate-400 space-y-1">
+              <p className="font-semibold text-slate-700 dark:text-slate-300">
+                No reviews received yet.
+              </p>
+              <p className="text-[11px] text-slate-400">
+                Reviews submitted by contract partners will appear here.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {userReviews.map((r) => {
+                const reviewerName = r.reviewer?.name || 'PayLance User';
+                const projectTitle = r.project?.title || 'Contract';
+                return (
+                  <div
+                    key={r._id}
+                    className="p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 space-y-2"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        {r.reviewer?.profileImage ? (
+                          <img
+                            src={r.reviewer.profileImage}
+                            alt={reviewerName}
+                            className="w-8 h-8 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center">
+                            {reviewerName.slice(0, 2).toUpperCase()}
+                          </div>
+                        )}
+                        <div>
+                          <span className="text-xs font-bold text-slate-900 dark:text-white">
+                            {reviewerName}
+                          </span>
+                          <p className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+                            {projectTitle}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-amber-400 text-xs font-bold">
+                        {'★'.repeat(r.rating)} ({r.rating}/5)
+                      </span>
+                    </div>
+                    {r.comment && (
+                      <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed pt-1">
+                        "{r.comment}"
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
     </div>

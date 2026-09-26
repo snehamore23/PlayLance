@@ -26,8 +26,8 @@ router.get('/test', (req, res) => {
 
 // @route   GET /api/reviews/user/:userId
 // @desc    Get reviews received by a user
-// @access  Public
-router.get('/user/:userId', getReviewsByUser);
+// @access  Private
+router.get('/user/:userId', protect, getReviewsByUser);
 
 // @route   GET /api/reviews/project/:projectId
 // @desc    Get reviews for a project

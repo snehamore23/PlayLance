@@ -20,6 +20,14 @@ const ProjectDetails = () => {
   const [hasApplied, setHasApplied] = useState(false);
   const [paying, setPaying] = useState(false);
 
+  // Reviews state
+  const [reviews, setReviews] = useState([]);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+  const [submittingReview, setSubmittingReview] = useState(false);
+  const [acceptedFreelancerId, setAcceptedFreelancerId] = useState(null);
+
   // Fetch project details
   useEffect(() => {
     const fetchProjectDetails = async () => {
@@ -75,6 +83,37 @@ const ProjectDetails = () => {
 
     checkFreelancerApplication();
   }, [user, id]);
+
+  // Fetch project reviews and accepted application details
+  useEffect(() => {
+    const fetchReviewsAndApp = async () => {
+      if (!id) return;
+      try {
+        const res = await api.get(`/reviews/project/${id}`);
+        if (res.data && res.data.success) {
+          setReviews(res.data.reviews || []);
+        }
+      } catch (err) {
+        console.error('Error fetching project reviews:', err);
+      }
+
+      try {
+        const appRes = await api.get(`/projects/${id}/applications`);
+        if (appRes.data && appRes.data.success) {
+          const apps = appRes.data.applications || [];
+          const acc = apps.find((a) => a.status === 'accepted');
+          if (acc) {
+            const fId = typeof acc.freelancer === 'object' ? acc.freelancer?._id : acc.freelancer;
+            setAcceptedFreelancerId(fId);
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching project applications:', err);
+      }
+    };
+
+    fetchReviewsAndApp();
+  }, [id]);
 
   const handleApplyClick = () => {
     if (!user) {
@@ -153,6 +192,51 @@ const ProjectDetails = () => {
       toast.error(err.response?.data?.message || 'Payment initiation failed.');
     } finally {
       setPaying(false);
+    }
+  };
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    if (!user || !project) return;
+
+    const clientId = typeof project.client === 'object' ? project.client?._id : project.client;
+    let targetUserId = null;
+
+    if (user._id === clientId) {
+      targetUserId = acceptedFreelancerId;
+    } else if (user._id === acceptedFreelancerId) {
+      targetUserId = clientId;
+    }
+
+    if (!targetUserId) {
+      toast.error('Unable to determine the participant to review.');
+      return;
+    }
+
+    try {
+      setSubmittingReview(true);
+      const res = await api.post('/reviews', {
+        project: project._id || id,
+        reviewedUser: targetUserId,
+        rating: Number(reviewRating),
+        comment: reviewComment.trim(),
+      });
+
+      if (res.data && res.data.success) {
+        toast.success('Review submitted successfully! ⭐');
+        setShowReviewModal(false);
+        setReviewComment('');
+        // Refresh project reviews
+        const updatedRes = await api.get(`/reviews/project/${id}`);
+        if (updatedRes.data && updatedRes.data.success) {
+          setReviews(updatedRes.data.reviews || []);
+        }
+      }
+    } catch (err) {
+      console.error('Error submitting review:', err);
+      toast.error(err.response?.data?.message || 'Failed to submit review.');
+    } finally {
+      setSubmittingReview(false);
     }
   };
 
@@ -236,6 +320,24 @@ const ProjectDetails = () => {
   const isFreelancerUser = user?.role === 'freelancer';
   const isClientUser = user?.role === 'client';
   const isOpen = status === 'open';
+
+  const rawClientId = typeof client === 'object' ? client?._id : client;
+  const clientIdStr = rawClientId ? String(rawClientId) : '';
+  const currentUserIdStr = user?._id ? String(user._id) : '';
+  const acceptedFreelancerIdStr = acceptedFreelancerId ? String(acceptedFreelancerId) : '';
+
+  const isParticipant = Boolean(
+    currentUserIdStr && (currentUserIdStr === clientIdStr || currentUserIdStr === acceptedFreelancerIdStr)
+  );
+  const hasUserReviewed = Boolean(
+    currentUserIdStr &&
+      reviews.some((r) => {
+        const revId = typeof r.reviewer === 'object' ? r.reviewer?._id : r.reviewer;
+        return revId && String(revId) === currentUserIdStr;
+      })
+  );
+  const isProjectCompleted = status === 'completed';
+  const canLeaveReview = isProjectCompleted && isParticipant && !hasUserReviewed;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -383,6 +485,88 @@ const ProjectDetails = () => {
               )}
             </div>
           )}
+          {/* Project Reviews Section */}
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs space-y-6">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <span>⭐</span> Project Reviews ({reviews.length})
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Testimonials and contract feedback submitted for this project.
+                </p>
+              </div>
+
+              {canLeaveReview && (
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => setShowReviewModal(true)}
+                  className="bg-amber-500 hover:bg-amber-600 text-white font-bold"
+                >
+                  ★ Leave a Review
+                </Button>
+              )}
+            </div>
+
+            {reviews.length === 0 ? (
+              <div className="p-6 bg-slate-50 dark:bg-slate-800/40 rounded-xl text-center text-xs text-slate-500 dark:text-slate-400 space-y-1">
+                <p className="font-semibold text-slate-700 dark:text-slate-300">
+                  No reviews submitted for this project yet.
+                </p>
+                {status !== 'completed' && (
+                  <p className="text-[11px] text-slate-400">
+                    (Reviews become available once project status is completed)
+                  </p>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {reviews.map((r) => {
+                  const revName = r.reviewer?.name || 'User';
+                  const revRole = r.reviewer?.role || 'User';
+                  return (
+                    <div
+                      key={r._id}
+                      className="p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 space-y-2"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-2.5">
+                          {r.reviewer?.profileImage ? (
+                            <img
+                              src={r.reviewer.profileImage}
+                              alt={revName}
+                              className="w-8 h-8 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center">
+                              {revName.slice(0, 2).toUpperCase()}
+                            </div>
+                          )}
+                          <div>
+                            <span className="text-xs font-bold text-slate-900 dark:text-white">
+                              {revName}
+                            </span>
+                            <span className="text-[11px] text-slate-400 ml-2 capitalize">
+                              ({revRole})
+                            </span>
+                          </div>
+                        </div>
+                        <div className="text-amber-400 text-xs font-bold">
+                          {'★'.repeat(r.rating)} ({r.rating}/5)
+                        </div>
+                      </div>
+                      {r.comment && (
+                        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed pl-10">
+                          "{r.comment}"
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Sidebar Info Column */}
@@ -559,6 +743,80 @@ const ProjectDetails = () => {
               </Button>
               <Button type="submit" variant="primary" size="md" disabled={submitting}>
                 {submitting ? 'Submitting...' : 'Submit Proposal 🚀'}
+              </Button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Leave Review Modal */}
+      {showReviewModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <form
+            onSubmit={handleReviewSubmit}
+            className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl"
+          >
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <span>⭐</span> Leave a Contract Review
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowReviewModal(false)}
+                className="text-slate-400 hover:text-slate-600 text-lg"
+              >
+                ✕
+              </button>
+            </div>
+            <p className="text-xs text-slate-500">
+              Project:{' '}
+              <strong className="text-slate-700 dark:text-slate-300">{title}</strong>
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Overall Rating (1 to 5 Stars) <span className="text-rose-500">*</span>
+                </label>
+                <select
+                  value={reviewRating}
+                  onChange={(e) => setReviewRating(Number(e.target.value))}
+                  className="w-full text-sm rounded-lg border border-slate-300 dark:border-slate-700 p-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                >
+                  <option value={5}>⭐⭐⭐⭐⭐ (5 - Exceptional)</option>
+                  <option value={4}>⭐⭐⭐⭐ (4 - Very Good)</option>
+                  <option value={3}>⭐⭐⭐ (3 - Satisfactory)</option>
+                  <option value={2}>⭐⭐ (2 - Below Expectations)</option>
+                  <option value={1}>⭐ (1 - Unsatisfactory)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Written Feedback / Comment
+                </label>
+                <textarea
+                  rows={4}
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
+                  placeholder="Share details of your experience working together on this project..."
+                  className="w-full text-sm rounded-lg border border-slate-300 dark:border-slate-700 p-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-3">
+              <Button
+                type="button"
+                variant="ghost"
+                size="md"
+                onClick={() => setShowReviewModal(false)}
+                disabled={submittingReview}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" variant="primary" size="md" disabled={submittingReview}>
+                {submittingReview ? 'Submitting...' : 'Submit Review ⭐'}
               </Button>
             </div>
           </form>
