@@ -12,14 +12,17 @@ const { allowRoles } = require('../middleware/roleMiddleware');
 // @route   POST /api/payments/webhook
 // @desc    Stripe webhook endpoint
 // @access  Public (Stripe calls this)
-// NOTE: This MUST come before any JSON body-parser middleware for this route.
-//       We use express.raw() so Stripe can verify the webhook signature.
 router.post('/webhook', express.raw({ type: 'application/json' }), stripeWebhook);
 
 // @route   POST /api/payments/create-checkout-session
 // @desc    Create a Stripe Checkout Session
 // @access  Private (client only)
 router.post('/create-checkout-session', protect, allowRoles('client'), createCheckoutSession);
+
+// @route   POST /api/payments/create (alias for compatibility)
+// @desc    Create a Stripe Checkout Session
+// @access  Private (client only)
+router.post('/create', protect, allowRoles('client'), createCheckoutSession);
 
 // @route   GET /api/payments/my
 // @desc    Get payments for the logged-in user
@@ -37,7 +40,7 @@ router.get('/test', (req, res) => {
 });
 
 // @route   GET /api/payments/:id
-// @desc    Get single payment
+// @desc    Get single payment by ID
 // @access  Private (related client or freelancer)
 router.get('/:id', protect, getPaymentById);
 

@@ -18,6 +18,7 @@ const ProjectDetails = () => {
   const [proposalInput, setProposalInput] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [hasApplied, setHasApplied] = useState(false);
+  const [paying, setPaying] = useState(false);
 
   // Fetch project details
   useEffect(() => {
@@ -134,6 +135,24 @@ const ProjectDetails = () => {
       toast.error(msg);
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handlePayNow = async (targetId) => {
+    if (!targetId || paying) return;
+    setPaying(true);
+    try {
+      const response = await api.post('/payments/create-checkout-session', { projectId: targetId });
+      if (response.data && response.data.success && response.data.url) {
+        window.location.href = response.data.url;
+      } else {
+        toast.error('Failed to get checkout session URL.');
+      }
+    } catch (err) {
+      console.error('Error initiating checkout:', err);
+      toast.error(err.response?.data?.message || 'Payment initiation failed.');
+    } finally {
+      setPaying(false);
     }
   };
 
@@ -414,8 +433,24 @@ const ProjectDetails = () => {
 
               {isClientUser && (
                 <>
+                  {status === 'in-progress' ? (
+                    <Button
+                      variant="primary"
+                      size="md"
+                      className="w-full bg-emerald-600 hover:bg-emerald-700 font-bold"
+                      onClick={() => handlePayNow(_id || id)}
+                      disabled={paying}
+                    >
+                      {paying ? 'Connecting to Stripe...' : 'Pay Now 💳'}
+                    </Button>
+                  ) : (
+                    <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-center text-xs text-amber-700 dark:text-amber-400 font-medium">
+                      Accept a proposal to enable payment
+                    </div>
+                  )}
+
                   <Link to={`/applications?projectId=${_id || id}`} className="block">
-                    <Button variant="primary" size="md" className="w-full">
+                    <Button variant="outline" size="md" className="w-full">
                       View Proposals ({applications.length})
                     </Button>
                   </Link>

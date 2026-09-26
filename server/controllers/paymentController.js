@@ -21,9 +21,17 @@ const getStripe = () => {
 // ──────────────────────────────────────────────
 const createCheckoutSession = async (req, res, next) => {
   try {
-    const { projectId } = req.body;
+    const projectId = req.body.projectId || req.body.project;
 
-    // 1. Validate projectId
+    // 1. Validate user role
+    if (req.user.role !== 'client') {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied. Only client users can create payments',
+      });
+    }
+
+    // 2. Validate projectId
     if (!projectId) {
       return res.status(400).json({
         success: false,
@@ -38,7 +46,7 @@ const createCheckoutSession = async (req, res, next) => {
       });
     }
 
-    // 2. Find the project
+    // 3. Find the project
     const project = await Project.findById(projectId);
 
     if (!project) {
@@ -48,7 +56,7 @@ const createCheckoutSession = async (req, res, next) => {
       });
     }
 
-    // 3. Verify the client owns this project
+    // 4. Verify the logged-in client owns this project
     if (project.client.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,
@@ -56,7 +64,7 @@ const createCheckoutSession = async (req, res, next) => {
       });
     }
 
-    // 4. Find the accepted application for this project
+    // 5. Find the accepted application for this project
     const acceptedApplication = await Application.findOne({
       project: projectId,
       status: 'accepted',
@@ -69,52 +77,37 @@ const createCheckoutSession = async (req, res, next) => {
       });
     }
 
-    // 5. Prevent duplicate active payments
-    const existingPayment = await Payment.findOne({
-      project: projectId,
-      status: { $in: ['pending', 'paid'] },
-    });
-
-    if (existingPayment) {
-      return res.status(409).json({
-        success: false,
-        message: existingPayment.status === 'paid'
-          ? 'Payment has already been completed for this project'
-          : 'A pending payment already exists for this project',
-      });
-    }
-
-    // 6. Use the project budget as the payment amount (in cents for Stripe)
+    // 6. Use the project's budget as payment amount (in smallest currency unit e.g. cents)
     const amount = project.budget;
-    const amountInCents = Math.round(amount * 100);
+    const amountInSmallestUnit = Math.round(amount * 100);
 
-    // 7. Create Stripe Checkout Session
+    // 7. Create Stripe Checkout Session (Test mode)
     const session = await getStripe().checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
       line_items: [
         {
           price_data: {
-            currency: 'inr',
+            currency: 'usd',
             product_data: {
               name: project.title,
               description: `Payment for project: ${project.title}`,
             },
-            unit_amount: amountInCents,
+            unit_amount: amountInSmallestUnit,
           },
           quantity: 1,
         },
       ],
       metadata: {
-        projectId: projectId,
+        projectId: projectId.toString(),
         clientId: req.user._id.toString(),
         freelancerId: acceptedApplication.freelancer.toString(),
       },
-      success_url: `${process.env.CLIENT_URL || 'http://localhost:3000'}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.CLIENT_URL || 'http://localhost:3000'}/payment/cancel`,
+      success_url: `${process.env.CLIENT_URL || 'http://localhost:3000'}/payments?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.CLIENT_URL || 'http://localhost:3000'}/payments?cancelled=true`,
     });
 
-    // 8. Create a pending Payment record
+    // 8. Create a pending Payment document
     const payment = await Payment.create({
       project: projectId,
       client: req.user._id,
@@ -124,11 +117,12 @@ const createCheckoutSession = async (req, res, next) => {
       transactionId: session.id,
     });
 
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
-      message: 'Checkout session created',
-      sessionId: session.id,
+      message: 'Checkout session created successfully',
       url: session.url,
+      paymentId: payment._id,
+      sessionId: session.id,
       payment,
     });
   } catch (error) {
@@ -144,21 +138,18 @@ const createCheckoutSession = async (req, res, next) => {
 };
 
 // ──────────────────────────────────────────────
-// @desc    Get payments for the logged-in user
+// @desc    Get payments for the logged-in user (client or freelancer)
 // @route   GET /api/payments/my
 // @access  Private
 // ──────────────────────────────────────────────
 const getMyPayments = async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const userRole = req.user.role;
 
-    let filter;
-    if (userRole === 'client') {
-      filter = { client: userId };
-    } else {
-      filter = { freelancer: userId };
-    }
+    // Return payments where logged-in user is either client or freelancer
+    const filter = {
+      $or: [{ client: userId }, { freelancer: userId }],
+    };
 
     const payments = await Payment.find(filter)
       .populate('project', 'title budget status')
@@ -206,7 +197,7 @@ const getPaymentById = async (req, res, next) => {
       });
     }
 
-    // 3. Only related client or freelancer can view
+    // 3. Verify only related client or freelancer can view
     const isClient = payment.client._id.toString() === req.user._id.toString();
     const isFreelancer = payment.freelancer._id.toString() === req.user._id.toString();
 
@@ -237,15 +228,14 @@ const stripeWebhook = async (req, res) => {
 
   try {
     if (webhookSecret) {
-      // Verify the webhook signature
       const sig = req.headers['stripe-signature'];
       event = getStripe().webhooks.constructEvent(req.body, sig, webhookSecret);
     } else {
-      // In development without webhook secret, parse the event directly
+      // In development without webhook secret, parse event directly
       event = req.body;
     }
   } catch (err) {
-    console.error('⚠️ Stripe webhook signature verification failed:', err.message);
+    console.error('Stripe webhook signature verification failed:', err.message);
     return res.status(400).json({
       success: false,
       message: `Webhook Error: ${err.message}`,
@@ -253,69 +243,31 @@ const stripeWebhook = async (req, res) => {
   }
 
   // Handle the event
-  switch (event.type) {
-    case 'checkout.session.completed': {
-      const session = event.data.object;
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
 
-      // Update the payment status to "paid"
-      const payment = await Payment.findOne({ transactionId: session.id });
+    // Find payment using Stripe Checkout Session ID stored in transactionId
+    const payment = await Payment.findOne({ transactionId: session.id });
 
-      if (payment) {
-        payment.status = 'paid';
-        await payment.save();
+    if (payment) {
+      payment.status = 'paid';
+      await payment.save();
 
-        // Optionally update project status to "completed"
-        const updatedProject = await Project.findByIdAndUpdate(
-          payment.project,
-          { $set: { status: 'completed' } },
-          { new: true }
-        );
+      // Send notification to freelancer
+      await createNotification({
+        recipient: payment.freelancer,
+        sender: payment.client,
+        type: 'PAYMENT_COMPLETED',
+        message: `Payment of $${payment.amount} has been completed.`,
+        relatedProject: payment.project,
+      }).catch(() => {});
 
-        const projectTitle = updatedProject ? updatedProject.title : 'Project';
-
-        // Notify freelancer
-        await createNotification({
-          recipient: payment.freelancer,
-          sender: payment.client,
-          type: 'PAYMENT_COMPLETED',
-          message: `Payment of ₹${payment.amount} for project "${projectTitle}" has been completed.`,
-          relatedProject: payment.project,
-        });
-
-        // Notify client
-        await createNotification({
-          recipient: payment.client,
-          sender: null,
-          type: 'PAYMENT_COMPLETED',
-          message: `Your payment of ₹${payment.amount} for project "${projectTitle}" was successful.`,
-          relatedProject: payment.project,
-        });
-
-        console.log(`✅ Payment ${payment._id} marked as paid for session ${session.id}`);
-      } else {
-        console.warn(`⚠️ No payment found for session ${session.id}`);
-      }
-      break;
+      console.log(`Payment ${payment._id} marked as paid for session ${session.id}`);
+    } else {
+      console.warn(`No payment record found for session ${session.id}`);
     }
-
-    case 'checkout.session.expired': {
-      const session = event.data.object;
-
-      const payment = await Payment.findOne({ transactionId: session.id });
-      if (payment && payment.status === 'pending') {
-        payment.status = 'failed';
-        await payment.save();
-        console.log(`❌ Payment ${payment._id} marked as failed (session expired)`);
-      }
-      break;
-    }
-
-    default:
-      // Unhandled event type — ignore silently
-      break;
   }
 
-  // Acknowledge receipt of the event
   return res.status(200).json({ received: true });
 };
 

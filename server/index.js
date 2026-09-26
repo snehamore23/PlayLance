@@ -24,7 +24,7 @@ const app = express();
 
 // Standard middleware
 app.use(cors());
-// Skip JSON parsing for the Stripe webhook route (it needs raw body)
+// Skip JSON body parser for Stripe webhook route so express.raw() in paymentRoutes receives raw body
 app.use((req, res, next) => {
   if (req.originalUrl === '/api/payments/webhook') {
     next();

@@ -1,75 +1,163 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { toast } from 'react-hot-toast';
+import api from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import Button from '../components/Button';
 
 const Payments = () => {
+  const { user } = useAuth();
+  const isClient = user?.role === 'client';
+
+  const [payments, setPayments] = useState([]);
+  const [loadingPayments, setLoadingPayments] = useState(true);
+  const [paymentsError, setPaymentsError] = useState(null);
+
+  const [myProjects, setMyProjects] = useState([]);
+  const [acceptedProjectIds, setAcceptedProjectIds] = useState(new Set());
+  const [loadingProjects, setLoadingProjects] = useState(false);
+  const [payingProjectId, setPayingProjectId] = useState(null);
+
+  // Fetch real payments from GET /api/payments/my
+  const fetchPayments = async () => {
+    try {
+      setLoadingPayments(true);
+      setPaymentsError(null);
+      const response = await api.get('/payments/my');
+      if (response.data && response.data.success) {
+        setPayments(response.data.payments || []);
+      } else {
+        setPayments([]);
+      }
+    } catch (err) {
+      console.error('Error fetching payments:', err);
+      setPaymentsError(
+        err.response?.data?.message || 'Failed to load payments history.'
+      );
+    } finally {
+      setLoadingPayments(false);
+    }
+  };
+
+  // If client, fetch client's projects and check for accepted applications
+  const fetchMyProjects = async () => {
+    if (!isClient) return;
+    try {
+      setLoadingProjects(true);
+      const response = await api.get('/projects/my');
+      if (response.data && response.data.success) {
+        const clientProjects = response.data.projects || [];
+        setMyProjects(clientProjects);
+
+        const acceptedSet = new Set();
+        await Promise.all(
+          clientProjects.map(async (p) => {
+            try {
+              const appRes = await api.get(`/projects/${p._id || p.id}/applications`);
+              if (appRes.data && appRes.data.success) {
+                const apps = appRes.data.applications || [];
+                if (apps.some((a) => a.status === 'accepted')) {
+                  acceptedSet.add(p._id || p.id);
+                }
+              }
+            } catch (e) {
+              // Ignore single project application fetch errors
+            }
+          })
+        );
+        setAcceptedProjectIds(acceptedSet);
+      } else {
+        setMyProjects([]);
+      }
+    } catch (err) {
+      console.error('Error fetching my projects for payments:', err);
+    } finally {
+      setLoadingProjects(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPayments();
+    if (isClient) {
+      fetchMyProjects();
+    }
+  }, [user?.role]);
+
+  // Handle Pay Now for a project
+  const handlePayNow = async (projectId) => {
+    if (!projectId || payingProjectId) return;
+    setPayingProjectId(projectId);
+
+    try {
+      const response = await api.post('/payments/create-checkout-session', { projectId });
+
+      if (response.data && response.data.success) {
+        if (response.data.url) {
+          window.location.href = response.data.url;
+        } else {
+          toast.success('Checkout session created successfully');
+          await fetchPayments();
+          if (isClient) {
+            await fetchMyProjects();
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Error processing payment:', err);
+      toast.error(err.response?.data?.message || 'Payment failed. Please try again.');
+    } finally {
+      setPayingProjectId(null);
+    }
+  };
+
+  // Helper calculation for summary cards
+  const totalAmountPaidOrEarned = payments
+    .filter((p) => p.status === 'paid')
+    .reduce((sum, p) => sum + (p.amount || 0), 0);
+
+  const completedCount = payments.filter((p) => p.status === 'paid').length;
+  const pendingCount = payments.filter((p) => p.status === 'pending').length;
+
   const summaryCards = [
     {
-      title: 'Available Balance',
-      amount: '$4,850.00',
-      desc: 'Ready for instant payout',
+      title: isClient ? 'Total Spent' : 'Total Earned',
+      amount: `$${totalAmountPaidOrEarned.toLocaleString()}`,
+      desc: isClient ? 'Total paid to freelancers' : 'Lifetime earnings on PayLance',
       icon: '💵',
     },
     {
-      title: 'In Escrow Protection',
-      amount: '$3,200.00',
-      desc: 'Secured for active milestones',
-      icon: '🔒',
+      title: 'Completed Payments',
+      amount: completedCount.toString(),
+      desc: 'Successful transactions',
+      icon: '✅',
     },
     {
-      title: 'Total Earned',
-      amount: '$24,600.00',
-      desc: 'Lifetime earnings on PayLance',
-      icon: '📈',
-    },
-    {
-      title: 'Pending Clearance',
-      amount: '$1,200.00',
-      desc: 'Releases in 2-3 business days',
+      title: 'Pending Payments',
+      amount: pendingCount.toString(),
+      desc: 'Awaiting completion',
       icon: '⏳',
     },
+    {
+      title: 'Total Transactions',
+      amount: payments.length.toString(),
+      desc: 'All recorded payments',
+      icon: '📊',
+    },
   ];
 
-  const transactions = [
-    {
-      id: 'TXN-98421',
-      project: 'Full-Stack React & Node.js Developer for SaaS MVP',
-      milestone: 'Milestone 2: REST API & DB Migration',
-      date: 'Sep 21, 2026',
-      amount: '+$1,200.00',
-      type: 'Milestone Release',
-      status: 'Completed',
-    },
-    {
-      id: 'TXN-98420',
-      project: 'UI/UX Redesign for AI Analytics Platform',
-      milestone: 'Milestone 1: Figma Prototype Delivery',
-      date: 'Sep 15, 2026',
-      amount: '+$850.00',
-      type: 'Milestone Release',
-      status: 'Completed',
-    },
-    {
-      id: 'TXN-98419',
-      project: 'Withdrawal to Bank Account (****4821)',
-      milestone: 'ACH Direct Deposit',
-      date: 'Sep 10, 2026',
-      amount: '-$2,500.00',
-      type: 'Withdrawal',
-      status: 'Processing',
-    },
-    {
-      id: 'TXN-98418',
-      project: 'Cross-Platform Mobile App for Logistics',
-      milestone: 'Initial Deposit in Escrow',
-      date: 'Sep 02, 2026',
-      amount: '$3,000.00',
-      type: 'Escrow Funded',
-      status: 'In Escrow',
-    },
-  ];
+  // Helper date formatter
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'N/A';
+    return date.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+  };
+
+  const paidProjectIds = new Set(
+    payments.filter((p) => p.status === 'paid').map((p) => p.project?._id || p.project)
+  );
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -77,13 +165,9 @@ const Payments = () => {
             Payments & Earnings
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Manage your PayLance wallet, escrow milestones, and payout history.
+            Manage project payments, view transaction receipts, and track your {isClient ? 'expenditures' : 'earnings'}.
           </p>
         </div>
-
-        <Button variant="primary" size="md">
-          Withdraw Funds 💳
-        </Button>
       </div>
 
       {/* Summary Cards */}
@@ -111,71 +195,189 @@ const Payments = () => {
         ))}
       </div>
 
+      {/* Client Section: Pay for Projects */}
+      {isClient && (
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+                Project Payments
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Pay for projects with an accepted freelancer using Stripe Checkout.
+              </p>
+            </div>
+          </div>
+
+          {loadingProjects ? (
+            <div className="p-6 text-center text-xs text-slate-500 font-medium">
+              Loading your projects...
+            </div>
+          ) : myProjects.length === 0 ? (
+            <div className="p-6 bg-slate-50 dark:bg-slate-800/40 rounded-xl text-center text-xs text-slate-500 dark:text-slate-400">
+              You have no posted projects yet.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {myProjects.map((project) => {
+                const pId = project._id || project.id;
+                const isPaid = paidProjectIds.has(pId);
+                const hasAcceptedFreelancer =
+                  acceptedProjectIds.has(pId) || project.status === 'in-progress';
+
+                return (
+                  <div
+                    key={pId}
+                    className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 flex flex-col justify-between space-y-3"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="inline-block px-2 py-0.5 text-[10px] font-semibold rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                          {project.status}
+                        </span>
+                        {isPaid && (
+                          <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400">
+                            Paid ✓
+                          </span>
+                        )}
+                      </div>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mt-2 line-clamp-1">
+                        {project.title}
+                      </h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-semibold">
+                        Budget: ${project.budget}
+                      </p>
+                    </div>
+
+                    <div>
+                      {isPaid ? (
+                        <div className="w-full py-2 px-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-center text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                          Payment Completed ✅
+                        </div>
+                      ) : hasAcceptedFreelancer ? (
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          onClick={() => handlePayNow(pId)}
+                          disabled={payingProjectId === pId}
+                          className="w-full"
+                        >
+                          {payingProjectId === pId ? 'Connecting to Stripe...' : 'Pay Now 💳'}
+                        </Button>
+                      ) : (
+                        <div className="w-full py-2 px-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-center text-xs text-amber-700 dark:text-amber-400 font-medium">
+                          Awaiting accepted proposal
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Transaction History Table */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-            Recent Transactions
+            Transaction History
           </h2>
-          <span className="text-xs text-slate-400">Showing last 4 transactions</span>
+          <span className="text-xs text-slate-400">
+            {payments.length} total transaction(s)
+          </span>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-slate-200 dark:border-slate-800 text-xs font-semibold uppercase tracking-wider text-slate-500">
-                <th className="py-3 px-4">Transaction ID</th>
-                <th className="py-3 px-4">Description</th>
-                <th className="py-3 px-4">Date</th>
-                <th className="py-3 px-4">Type</th>
-                <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-4 text-right">Amount</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
-              {transactions.map((t) => (
-                <tr key={t.id} className="hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors">
-                  <td className="py-4 px-4 font-mono text-xs font-semibold text-slate-700 dark:text-slate-300">
-                    {t.id}
-                  </td>
-                  <td className="py-4 px-4">
-                    <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
-                      {t.project}
-                    </div>
-                    <div className="text-xs text-slate-500">{t.milestone}</div>
-                  </td>
-                  <td className="py-4 px-4 text-xs text-slate-500">
-                    {t.date}
-                  </td>
-                  <td className="py-4 px-4 text-xs font-medium text-slate-600 dark:text-slate-400">
-                    {t.type}
-                  </td>
-                  <td className="py-4 px-4">
-                    <span
-                      className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                        t.status === 'Completed'
-                          ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400'
-                          : t.status === 'Processing'
-                          ? 'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-400'
-                          : 'bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400'
-                      }`}
-                    >
-                      {t.status}
-                    </span>
-                  </td>
-                  <td className={`py-4 px-4 text-right font-extrabold text-sm ${
-                    t.amount.startsWith('-') ? 'text-rose-600' : 'text-emerald-600 dark:text-emerald-400'
-                  }`}>
-                    {t.amount}
-                  </td>
+        {loadingPayments ? (
+          <div className="p-12 text-center text-xs text-slate-500 dark:text-slate-400 space-y-2">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-emerald-500 mx-auto"></div>
+            <p>Loading transactions...</p>
+          </div>
+        ) : paymentsError ? (
+          <div className="p-6 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400 text-center space-y-2 text-xs">
+            <p className="font-semibold">{paymentsError}</p>
+            <Button variant="outline" size="sm" onClick={fetchPayments}>
+              Retry
+            </Button>
+          </div>
+        ) : payments.length === 0 ? (
+          <div className="p-12 text-center text-slate-500 dark:text-slate-400 space-y-2">
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+              No transactions found.
+            </p>
+            <p className="text-xs">
+              {isClient
+                ? 'Payments you create for your projects will appear here.'
+                : 'Payments received from clients will appear here.'}
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-slate-200 dark:border-slate-800 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <th className="py-3 px-4">Transaction ID</th>
+                  <th className="py-3 px-4">Project</th>
+                  <th className="py-3 px-4">{isClient ? 'Freelancer' : 'Client'}</th>
+                  <th className="py-3 px-4">Date</th>
+                  <th className="py-3 px-4">Status</th>
+                  <th className="py-3 px-4 text-right">Amount</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
+                {payments.map((p) => {
+                  const projectTitle = p.project?.title || 'Project Payment';
+                  const otherParty = isClient ? p.freelancer : p.client;
+                  const otherPartyName = otherParty?.name || otherParty?.email || 'N/A';
+
+                  return (
+                    <tr
+                      key={p._id}
+                      className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                    >
+                      <td className="py-4 px-4 font-mono text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                        {p.transactionId || p._id}
+                      </td>
+                      <td className="py-4 px-4">
+                        <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
+                          {projectTitle}
+                        </div>
+                      </td>
+                      <td className="py-4 px-4 text-xs font-medium text-slate-700 dark:text-slate-300">
+                        {otherPartyName}
+                      </td>
+                      <td className="py-4 px-4 text-xs text-slate-500">
+                        {formatDate(p.createdAt)}
+                      </td>
+                      <td className="py-4 px-4">
+                        <span
+                          className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider ${
+                            p.status === 'paid'
+                              ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400'
+                              : p.status === 'pending'
+                              ? 'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-400'
+                              : 'bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-400'
+                          }`}
+                        >
+                          {p.status}
+                        </span>
+                      </td>
+                      <td className="py-4 px-4 text-right font-extrabold text-sm text-emerald-600 dark:text-emerald-400">
+                        ${p.amount}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 export default Payments;
+
+
