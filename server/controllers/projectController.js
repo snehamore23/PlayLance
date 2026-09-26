@@ -353,10 +353,33 @@ const deleteProject = async (req, res, next) => {
   }
 };
 
+// ──────────────────────────────────────────────
+// @desc    Get logged-in client's projects
+// @route   GET /api/projects/my
+// @access  Private (client only)
+// ──────────────────────────────────────────────
+const getMyProjects = async (req, res, next) => {
+  try {
+    const projects = await Project.find({ client: req.user._id })
+      .populate('client', 'name email')
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      count: projects.length,
+      projects,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createProject,
   getProjects,
+  getMyProjects,
   getProjectById,
   updateProject,
   deleteProject,
 };
+

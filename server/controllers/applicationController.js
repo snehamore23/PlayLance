@@ -84,12 +84,15 @@ const createApplication = async (req, res, next) => {
     }
 
     // 9. Create the application
+    console.log('[DEBUG Backend] Creating application for project:', project, 'from freelancer:', req.user._id);
     const application = await Application.create({
       project,
       freelancer: req.user._id,
       proposal: proposal.trim(),
       bidAmount,
     });
+
+    console.log('[DEBUG Backend] Application created successfully with ID:', application._id);
 
     // 10. Push application ID into the project's applications array
     targetProject.applications.push(application._id);
@@ -191,6 +194,8 @@ const getProjectApplications = async (req, res, next) => {
     const applications = await Application.find({ project: projectId })
       .populate('freelancer', 'name email profileImage skills rating')
       .sort({ createdAt: -1 });
+
+    console.log('[DEBUG Backend] Fetched applications for project:', projectId, 'count:', applications.length);
 
     return res.status(200).json({
       success: true,

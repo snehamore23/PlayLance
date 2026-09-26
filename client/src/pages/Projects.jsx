@@ -1,98 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import api from '../services/api';
 import ProjectCard from '../components/ProjectCard';
 import Input from '../components/Input';
 import Button from '../components/Button';
 
 const Projects = () => {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedSkill, setSelectedSkill] = useState('All');
-  const [selectedBudget, setSelectedBudget] = useState('All');
+  const [selectedStatus, setSelectedStatus] = useState('All');
 
-  const categories = ['All', 'Web Development', 'Mobile Apps', 'UI/UX Design', 'DevOps & Cloud', 'AI & Machine Learning'];
-  const skillsList = ['All', 'React', 'Node.js', 'Tailwind CSS', 'Figma', 'TypeScript', 'Python', 'MongoDB'];
-  const budgetRanges = ['All', 'Under $1,000', '$1,000 - $3,000', '$3,000 - $5,000', '$5,000+'];
+  const fetchProjects = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await api.get('/projects');
+      if (response.data && response.data.success) {
+        setProjects(response.data.projects || []);
+      } else {
+        setProjects([]);
+      }
+    } catch (err) {
+      console.error('Error fetching projects:', err);
+      setError(err.response?.data?.message || 'Failed to fetch projects. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const allProjects = [
-    {
-      id: '1',
-      title: 'Full-Stack React & Node.js Developer for SaaS MVP',
-      client: { name: 'Acme Technologies', location: 'San Francisco, CA', rating: 4.9 },
-      category: 'Web Development',
-      skills: ['React', 'Node.js', 'Tailwind CSS', 'MongoDB'],
-      budget: '$2,500 - $4,000',
-      type: 'Fixed Price',
-      deadline: 'Est. 1 month',
-      proposalsCount: 8,
-      postedAt: '2 hours ago',
-      description: 'We are looking for an experienced full-stack developer to help us build out the MVP of our modern analytics dashboard. Must have prior experience with REST APIs and clean component architecture.',
-    },
-    {
-      id: '2',
-      title: 'Modern Mobile Health & Fitness App in React Native',
-      client: { name: 'VitalSync Corp', location: 'Austin, TX', rating: 4.8 },
-      category: 'Mobile Apps',
-      skills: ['React', 'TypeScript', 'Node.js'],
-      budget: '$4,500',
-      type: 'Fixed Price',
-      deadline: 'Est. 6 weeks',
-      proposalsCount: 14,
-      postedAt: '4 hours ago',
-      description: 'Looking for a React Native specialist to implement workout tracking, heart-rate device Bluetooth sync, and clean dark mode design.',
-    },
-    {
-      id: '3',
-      title: 'High-Converting Landing Page & Brand Identity Design',
-      client: { name: 'Aura Studio', location: 'Berlin, Germany', rating: 5.0 },
-      category: 'UI/UX Design',
-      skills: ['Figma', 'Tailwind CSS'],
-      budget: '$1,200',
-      type: 'Fixed Price',
-      deadline: 'Est. 10 days',
-      proposalsCount: 5,
-      postedAt: '5 hours ago',
-      description: 'Need a senior Figma designer with Tailwind proficiency to redesign our main marketing page with high-converting CTAs and modern typography.',
-    },
-    {
-      id: '4',
-      title: 'Kubernetes Cluster & CI/CD Pipeline Automation',
-      client: { name: 'ScaleCloud Global', location: 'Seattle, WA', rating: 4.9 },
-      category: 'DevOps & Cloud',
-      skills: ['Docker', 'Kubernetes', 'AWS', 'Node.js'],
-      budget: '$3,800',
-      type: 'Fixed Price',
-      deadline: 'Est. 3 weeks',
-      proposalsCount: 6,
-      postedAt: '1 day ago',
-      description: 'Setup and harden an EKS cluster with automated GitHub Actions CI/CD workflows, Terraform state management, and Prometheus metrics.',
-    },
-    {
-      id: '5',
-      title: 'AI Customer Support Bot using LangChain & Python',
-      client: { name: 'ChatFlow AI', location: 'Toronto, Canada', rating: 4.7 },
-      category: 'AI & Machine Learning',
-      skills: ['Python', 'MongoDB', 'React'],
-      budget: '$5,500',
-      type: 'Fixed Price',
-      deadline: 'Est. 2 months',
-      proposalsCount: 19,
-      postedAt: '2 days ago',
-      description: 'Develop a custom retrieval-augmented generation (RAG) assistant connected to our knowledge base and integrated into our web app.',
-    },
-    {
-      id: '6',
-      title: 'E-Commerce Store Redesign with Stripe Checkout',
-      client: { name: 'Nordic Goods Co.', location: 'Oslo, Norway', rating: 5.0 },
-      category: 'Web Development',
-      skills: ['React', 'Tailwind CSS', 'Node.js'],
-      budget: '$2,800',
-      type: 'Fixed Price',
-      deadline: 'Est. 3 weeks',
-      proposalsCount: 11,
-      postedAt: '2 days ago',
-      description: 'Complete redesign of product catalog, responsive shopping bag, and customized multi-currency Stripe billing integration.',
-    },
-  ];
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const availableCategories = ['All', ...new Set(projects.map((p) => p.category).filter(Boolean))];
+  const statuses = ['All', 'open', 'in-progress', 'completed', 'cancelled'];
+
+  const filteredProjects = projects.filter((project) => {
+    const term = searchTerm.toLowerCase().trim();
+    const matchesSearch =
+      !term ||
+      (project.title && project.title.toLowerCase().includes(term)) ||
+      (project.description && project.description.toLowerCase().includes(term));
+
+    const matchesCategory =
+      selectedCategory === 'All' ||
+      (project.category && project.category.toLowerCase() === selectedCategory.toLowerCase());
+
+    const matchesStatus =
+      selectedStatus === 'All' ||
+      (project.status && project.status.toLowerCase() === selectedStatus.toLowerCase());
+
+    return matchesSearch && matchesCategory && matchesStatus;
+  });
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -114,7 +76,7 @@ const Projects = () => {
             <Input
               id="search"
               name="search"
-              placeholder="Search by keywords (e.g. React, Full-Stack, Figma)..."
+              placeholder="Search by project title or description..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               leftIcon={
@@ -124,13 +86,15 @@ const Projects = () => {
               }
             />
           </div>
-          <Button variant="primary" size="md" className="shrink-0">
-            Search Jobs
-          </Button>
+          {searchTerm && (
+            <Button variant="outline" size="md" onClick={() => setSearchTerm('')} className="shrink-0">
+              Clear Search
+            </Button>
+          )}
         </div>
 
-        {/* Filter Pills / Dropdowns */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-slate-100 dark:border-slate-800">
+        {/* Filter Dropdowns */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100 dark:border-slate-800">
           {/* Category Filter */}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
@@ -141,7 +105,7 @@ const Projects = () => {
               onChange={(e) => setSelectedCategory(e.target.value)}
               className="w-full text-sm rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 p-2.5 focus:border-emerald-500 focus:ring-emerald-500"
             >
-              {categories.map((c) => (
+              {availableCategories.map((c) => (
                 <option key={c} value={c}>
                   {c}
                 </option>
@@ -149,37 +113,19 @@ const Projects = () => {
             </select>
           </div>
 
-          {/* Skills Filter */}
+          {/* Status Filter */}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
-              Skill
+              Status
             </label>
             <select
-              value={selectedSkill}
-              onChange={(e) => setSelectedSkill(e.target.value)}
-              className="w-full text-sm rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 p-2.5 focus:border-emerald-500 focus:ring-emerald-500"
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              className="w-full text-sm rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 p-2.5 focus:border-emerald-500 focus:ring-emerald-500 capitalize"
             >
-              {skillsList.map((s) => (
+              {statuses.map((s) => (
                 <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Budget Filter */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
-              Budget Range
-            </label>
-            <select
-              value={selectedBudget}
-              onChange={(e) => setSelectedBudget(e.target.value)}
-              className="w-full text-sm rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 p-2.5 focus:border-emerald-500 focus:ring-emerald-500"
-            >
-              {budgetRanges.map((b) => (
-                <option key={b} value={b}>
-                  {b}
+                  {s === 'All' ? 'All Statuses' : s}
                 </option>
               ))}
             </select>
@@ -187,25 +133,45 @@ const Projects = () => {
         </div>
       </div>
 
-      {/* Results Count & Sort */}
-      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-        <span>Showing <strong>{allProjects.length}</strong> available projects</span>
-        <div className="flex items-center gap-2">
-          <span>Sort by:</span>
-          <select className="bg-transparent border-none text-xs font-semibold text-slate-700 dark:text-slate-300 focus:ring-0 cursor-pointer">
-            <option>Newest First</option>
-            <option>Highest Budget</option>
-            <option>Fewest Proposals</option>
-          </select>
+      {/* Results State */}
+      {loading ? (
+        <div className="p-12 text-center text-slate-500 dark:text-slate-400 font-medium">
+          Loading projects from PayLance...
         </div>
-      </div>
+      ) : error ? (
+        <div className="p-6 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400 text-center space-y-3">
+          <p className="font-semibold">{error}</p>
+          <Button variant="outline" size="sm" onClick={fetchProjects}>
+            Retry
+          </Button>
+        </div>
+      ) : filteredProjects.length === 0 ? (
+        <div className="p-12 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-3">
+          <div className="text-3xl">📁</div>
+          <p className="text-lg font-bold text-slate-800 dark:text-slate-200">
+            No projects available yet.
+          </p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+            {projects.length === 0
+              ? 'Check back later or post a new project.'
+              : 'No projects match your current search and filter criteria.'}
+          </p>
+        </div>
+      ) : (
+        <>
+          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+            <span>
+              Showing <strong>{filteredProjects.length}</strong> of {projects.length} available project(s)
+            </span>
+          </div>
 
-      {/* Projects Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {allProjects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
-        ))}
-      </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProjects.map((project) => (
+              <ProjectCard key={project._id || project.id} project={project} />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 };

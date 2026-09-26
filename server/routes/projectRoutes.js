@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   createProject,
   getProjects,
+  getMyProjects,
   getProjectById,
   updateProject,
   deleteProject,
@@ -20,6 +21,11 @@ router.post('/', protect, allowRoles('client'), createProject);
 // @desc    Get all projects (with optional filters)
 // @access  Public
 router.get('/', getProjects);
+
+// @route   GET /api/projects/my
+// @desc    Get logged-in client's projects
+// @access  Private (client only)
+router.get('/my', protect, allowRoles('client'), getMyProjects);
 
 // @route   GET /api/projects/test
 // @desc    Test Projects API route

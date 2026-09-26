@@ -50,6 +50,7 @@ function App() {
             <Route path="/post-project" element={<PostProject />} />
             <Route path="/projects/:id/edit" element={<EditProject />} />
             <Route path="/applications" element={<Applications />} />
+            <Route path="/applications/:projectId" element={<Applications />} />
             <Route path="/my-projects" element={<MyProjects />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/payments" element={<Payments />} />
