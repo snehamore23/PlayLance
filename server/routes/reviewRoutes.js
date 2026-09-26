@@ -3,6 +3,8 @@ const router = express.Router();
 const {
   createReview,
   getReviewsByUser,
+  getReviewsReceivedByUser,
+  getReviewsGivenByUser,
   getReviewsByProject,
   updateReview,
   deleteReview,
@@ -25,9 +27,19 @@ router.get('/test', (req, res) => {
 });
 
 // @route   GET /api/reviews/user/:userId
-// @desc    Get reviews received by a user
+// @desc    Get reviews received or given by a user
 // @access  Private
 router.get('/user/:userId', protect, getReviewsByUser);
+
+// @route   GET /api/reviews/received/:userId
+// @desc    Get reviews received by a user
+// @access  Private
+router.get('/received/:userId', protect, getReviewsReceivedByUser);
+
+// @route   GET /api/reviews/given/:userId
+// @desc    Get reviews given by a user
+// @access  Private
+router.get('/given/:userId', protect, getReviewsGivenByUser);
 
 // @route   GET /api/reviews/project/:projectId
 // @desc    Get reviews for a project

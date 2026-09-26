@@ -103,8 +103,8 @@ const createReview = async (req, res, next) => {
       status: 'accepted',
     });
 
-    const clientId = project.client.toString();
-    const freelancerId = acceptedApp ? acceptedApp.freelancer.toString() : null;
+    const clientId = (project.client._id || project.client).toString();
+    const freelancerId = acceptedApp ? (acceptedApp.freelancer._id || acceptedApp.freelancer).toString() : null;
     const reviewerId = req.user._id.toString();
 
     // 9. Reviewer must be related to the project (client or freelancer)
@@ -192,9 +192,9 @@ const createReview = async (req, res, next) => {
 };
 
 // ──────────────────────────────────────────────
-// @desc    Get reviews received by a user
+// @desc    Get reviews received or given by a user
 // @route   GET /api/reviews/user/:userId
-// @access  Public
+// @access  Private
 // ──────────────────────────────────────────────
 const getReviewsByUser = async (req, res, next) => {
   try {
@@ -207,9 +207,85 @@ const getReviewsByUser = async (req, res, next) => {
       });
     }
 
+    const reviews = await Review.find({
+      $or: [{ reviewedUser: userId }, { reviewer: userId }],
+    })
+      .populate('reviewer', 'name profileImage email role')
+      .populate('reviewedUser', 'name profileImage email role')
+      .populate('project', 'title status')
+      .sort({ createdAt: -1 });
+
+    const receivedReviews = reviews.filter(
+      (r) => r.reviewedUser && r.reviewedUser._id.toString() === userId.toString()
+    );
+    const givenReviews = reviews.filter(
+      (r) => r.reviewer && r.reviewer._id.toString() === userId.toString()
+    );
+
+    return res.status(200).json({
+      success: true,
+      count: reviews.length,
+      reviews,
+      receivedReviews,
+      givenReviews,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ──────────────────────────────────────────────
+// @desc    Get reviews received by a user
+// @route   GET /api/reviews/received/:userId
+// @access  Private
+// ──────────────────────────────────────────────
+const getReviewsReceivedByUser = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid user ID',
+      });
+    }
+
     const reviews = await Review.find({ reviewedUser: userId })
-      .populate('reviewer', 'name profileImage')
-      .populate('project', 'title')
+      .populate('reviewer', 'name profileImage email role')
+      .populate('reviewedUser', 'name profileImage email role')
+      .populate('project', 'title status')
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      count: reviews.length,
+      reviews,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ──────────────────────────────────────────────
+// @desc    Get reviews given by a user
+// @route   GET /api/reviews/given/:userId
+// @access  Private
+// ──────────────────────────────────────────────
+const getReviewsGivenByUser = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid user ID',
+      });
+    }
+
+    const reviews = await Review.find({ reviewer: userId })
+      .populate('reviewer', 'name profileImage email role')
+      .populate('reviewedUser', 'name profileImage email role')
+      .populate('project', 'title status')
       .sort({ createdAt: -1 });
 
     return res.status(200).json({
@@ -400,6 +476,8 @@ const deleteReview = async (req, res, next) => {
 module.exports = {
   createReview,
   getReviewsByUser,
+  getReviewsReceivedByUser,
+  getReviewsGivenByUser,
   getReviewsByProject,
   updateReview,
   deleteReview,
