@@ -1,9 +1,20 @@
 import React, { useState } from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
+import { useAuth } from '../context/AuthContext';
+
+const getInitials = (name) => {
+  if (!name) return 'U';
+  const parts = name.trim().split(' ').filter(Boolean);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+  return name.slice(0, 2).toUpperCase();
+};
 
 const DashboardLayout = ({ children }) => {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-950 flex flex-col md:flex-row text-slate-900 dark:text-slate-100">
@@ -73,10 +84,10 @@ const DashboardLayout = ({ children }) => {
 
             <Link to="/profile" className="flex items-center gap-2.5 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
               <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 text-white font-bold text-sm flex items-center justify-center shadow-xs">
-                A
+                {getInitials(user?.name)}
               </div>
               <span className="text-sm font-medium text-slate-700 dark:text-slate-200 hidden sm:inline">
-                Alex Morgan
+                {user?.name || 'User'}
               </span>
             </Link>
           </div>

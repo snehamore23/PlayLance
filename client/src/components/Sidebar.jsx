@@ -1,8 +1,20 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
+
+const getInitials = (name) => {
+  if (!name) return 'U';
+  const parts = name.trim().split(' ').filter(Boolean);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+  return name.slice(0, 2).toUpperCase();
+};
 
 const Sidebar = ({ onClose }) => {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const navItems = [
     {
@@ -92,6 +104,8 @@ const Sidebar = ({ onClose }) => {
 
   const handleLogout = () => {
     if (onClose) onClose();
+    logout();
+    toast.success('Logged out successfully');
     navigate('/login');
   };
 
@@ -121,6 +135,21 @@ const Sidebar = ({ onClose }) => {
             </button>
           )}
         </div>
+
+        {/* User info header if logged in */}
+        {user && (
+          <div className="px-4 pt-4 pb-2 border-b border-slate-800/80">
+            <div className="flex items-center gap-3 p-2 rounded-xl bg-slate-800/50">
+              <div className="w-9 h-9 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                {getInitials(user?.name)}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-white truncate">{user?.name || 'User'}</p>
+                <p className="text-xs text-slate-400 capitalize truncate">{user?.role || 'User'}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Navigation list */}
         <div className="px-3 py-4 space-y-1">

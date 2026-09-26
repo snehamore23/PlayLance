@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../components/Button';
+import { useAuth } from '../context/AuthContext';
 
 const Dashboard = () => {
+  const { user } = useAuth();
+
   const stats = [
     {
       title: 'Total Earnings',
@@ -104,7 +107,7 @@ const Dashboard = () => {
             Freelancer Overview
           </span>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">
-            Welcome back, Alex! 👋
+            Welcome back, {user?.name || 'User'}! 👋
           </h1>
           <p className="text-slate-200 text-sm mt-1 max-w-xl">
             Here is what is happening across your active PayLance contracts and proposals today.

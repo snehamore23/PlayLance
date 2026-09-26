@@ -6,6 +6,9 @@ import { Toaster } from 'react-hot-toast';
 import MainLayout from './layouts/MainLayout';
 import DashboardLayout from './layouts/DashboardLayout';
 
+// Components
+import ProtectedRoute from './components/ProtectedRoute';
+
 // Pages
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -39,18 +42,20 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Route>
 
-        {/* Workspace / Dashboard Routes with DashboardLayout (Sidebar + Header) */}
-        <Route element={<DashboardLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/post-project" element={<PostProject />} />
-          <Route path="/projects/:id/edit" element={<EditProject />} />
-          <Route path="/applications" element={<Applications />} />
-          <Route path="/my-projects" element={<MyProjects />} />
-          <Route path="/messages" element={<Messages />} />
-          <Route path="/payments" element={<Payments />} />
-          <Route path="/reviews" element={<Reviews />} />
-          <Route path="/notifications" element={<Notifications />} />
+        {/* Protected Workspace / Dashboard Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<DashboardLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/post-project" element={<PostProject />} />
+            <Route path="/projects/:id/edit" element={<EditProject />} />
+            <Route path="/applications" element={<Applications />} />
+            <Route path="/my-projects" element={<MyProjects />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/payments" element={<Payments />} />
+            <Route path="/reviews" element={<Reviews />} />
+            <Route path="/notifications" element={<Notifications />} />
+          </Route>
         </Route>
       </Routes>
     </Router>

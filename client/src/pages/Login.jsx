@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
 import Input from '../components/Input';
 import Button from '../components/Button';
 
@@ -8,16 +10,32 @@ const Login = () => {
     email: '',
     password: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (errorMsg) setErrorMsg('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Placeholder submit behavior for now
-    navigate('/dashboard');
+    setIsSubmitting(true);
+    setErrorMsg('');
+
+    try {
+      await login(formData.email, formData.password);
+      toast.success('Signed in successfully!');
+      navigate('/dashboard');
+    } catch (err) {
+      const backendError = err.response?.data?.message || 'Login failed. Please check your credentials.';
+      setErrorMsg(backendError);
+      toast.error(backendError);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -40,6 +58,12 @@ const Login = () => {
           </p>
         </div>
 
+        {errorMsg && (
+          <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-600 dark:text-rose-400 text-sm font-medium">
+            {errorMsg}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">
           <Input
             label="Email address"
@@ -51,6 +75,7 @@ const Login = () => {
             placeholder="you@example.com"
             value={formData.email}
             onChange={handleChange}
+            disabled={isSubmitting}
           />
 
           <div className="space-y-1">
@@ -64,6 +89,7 @@ const Login = () => {
               placeholder="••••••••"
               value={formData.password}
               onChange={handleChange}
+              disabled={isSubmitting}
             />
             <div className="flex items-center justify-between pt-1">
               <label className="flex items-center text-xs text-slate-600 dark:text-slate-400">
@@ -79,8 +105,18 @@ const Login = () => {
             </div>
           </div>
 
-          <Button type="submit" variant="primary" size="lg" className="w-full">
-            Sign In
+          <Button type="submit" variant="primary" size="lg" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <span className="flex items-center gap-2">
+                <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                Signing In...
+              </span>
+            ) : (
+              'Sign In'
+            )}
           </Button>
         </form>
 
