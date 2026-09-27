@@ -3,10 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    color-scheme: dark;
-  }
-
   html {
     scroll-behavior: smooth;
   }
@@ -15,24 +11,39 @@
     margin: 0;
     min-height: 100vh;
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #020617;
-    color: #F8FAFC;
+    background-color: #f8fafc;
+    color: #0f172a;
     overflow-x: hidden;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
-  /* Custom dark scrollbar */
+  html.dark body {
+    background-color: #020617;
+    color: #F8FAFC;
+  }
+
+  /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
   ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+  html.dark ::-webkit-scrollbar-track {
     background: #0F172A;
   }
   ::-webkit-scrollbar-thumb {
-    background: #334155;
+    background: #cbd5e1;
     border-radius: 4px;
   }
+  html.dark ::-webkit-scrollbar-thumb {
+    background: #334155;
+  }
   ::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+  html.dark ::-webkit-scrollbar-thumb:hover {
     background: #475569;
   }
 }
@@ -124,18 +135,31 @@
 /* React Bits: Spotlight Card hover interaction */
 .spotlight-card {
   position: relative;
-  background: #0F172A;
-  border: 1px solid #1E293B;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
+html.dark .spotlight-card {
+  background: #0F172A;
+  border: 1px solid #1E293B;
+}
 .spotlight-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(34, 197, 94, 0.2);
+  transform: translateY(-2px);
+}
+html.dark .spotlight-card:hover {
   border-color: #334155;
   box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(34, 197, 94, 0.2);
-  transform: translateY(-2px);
 }
 
 /* React Bits: Depth Card effect */
 .depth-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 4px 10px -2px rgba(0, 0, 0, 0.04);
+}
+html.dark .depth-card {
   background: #0F172A;
   border: 1px solid #1E293B;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 4px 10px -2px rgba(0, 0, 0, 0.2);

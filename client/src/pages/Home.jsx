@@ -60,18 +60,18 @@ const Home = () => {
   ];
 
   return (
-    <div className="space-y-16 lg:space-y-24 pb-16 bg-slate-950 text-slate-100">
+    <div className="space-y-16 lg:space-y-24 pb-16 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 py-20 lg:py-28 px-4 sm:px-6 lg:px-8 border-b border-slate-800/80">
+      <section className="relative overflow-hidden bg-gradient-to-b from-slate-100 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 py-20 lg:py-28 px-4 sm:px-6 lg:px-8 border-b border-slate-200 dark:border-slate-800/80">
         <div className="max-w-4xl mx-auto text-center space-y-8">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.15]">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.15]">
             Find Work. Hire Talent. <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-cyan-500 to-purple-500 dark:from-emerald-400 dark:via-cyan-400 dark:to-purple-400">
               Get Things Done.
             </span>
           </h1>
 
-          <p className="text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto font-medium leading-relaxed">
+          <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto font-medium leading-relaxed">
             PayLance connects forward-thinking companies and top-tier independent professionals with verified contracts, escrow protection, and rapid delivery.
           </p>
 
@@ -88,15 +88,15 @@ const Home = () => {
             </Link>
           </div>
 
-          <div className="pt-8 flex flex-wrap items-center justify-center gap-8 text-xs text-slate-400 font-semibold">
+          <div className="pt-8 flex flex-wrap items-center justify-center gap-8 text-xs text-slate-500 dark:text-slate-400 font-semibold">
             <div className="flex items-center gap-2">
-              <span className="text-emerald-400 font-bold text-base">✓</span> Zero Upfront Fees
+              <span className="text-emerald-500 dark:text-emerald-400 font-bold text-base">✓</span> Zero Upfront Fees
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-emerald-400 font-bold text-base">✓</span> Verified Escrow Protection
+              <span className="text-emerald-500 dark:text-emerald-400 font-bold text-base">✓</span> Verified Escrow Protection
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-emerald-400 font-bold text-base">✓</span> Top 1% Global Talent
+              <span className="text-emerald-500 dark:text-emerald-400 font-bold text-base">✓</span> Top 1% Global Talent
             </div>
           </div>
         </div>
@@ -105,13 +105,13 @@ const Home = () => {
       {/* How It Works Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <span className="text-xs uppercase tracking-wider font-bold text-emerald-400">
+          <span className="text-xs uppercase tracking-wider font-bold text-emerald-600 dark:text-emerald-400">
             Simple Process
           </span>
-          <h2 className="mt-2 text-3xl font-black text-white sm:text-4xl">
+          <h2 className="mt-2 text-3xl font-black text-slate-900 dark:text-white sm:text-4xl">
             How PayLance Works
           </h2>
-          <p className="mt-3 text-slate-400 text-sm sm:text-base">
+          <p className="mt-3 text-slate-500 dark:text-slate-400 text-sm sm:text-base">
             From initial project posting to final milestone release, our platform ensures trust at every single step.
           </p>
         </div>
@@ -120,23 +120,23 @@ const Home = () => {
           {steps.map((item) => (
             <div
               key={item.step}
-              className="bg-slate-900/80 rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-md relative flex flex-col justify-between hover:border-slate-700 transition-all duration-200"
+              className="bg-white dark:bg-slate-900/80 rounded-2xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-md relative flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200"
             >
               <div>
                 <div className="flex items-center justify-between mb-6">
-                  <div className="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center border border-slate-700">
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700">
                     <div>
                       {item.icon}
                     </div>
                   </div>
-                  <span className="text-3xl font-black text-slate-700">
+                  <span className="text-3xl font-black text-slate-300 dark:text-slate-700">
                     {item.step}
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
                   {item.title}
                 </h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
+                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
                   {item.description}
                 </p>
               </div>
@@ -149,13 +149,13 @@ const Home = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-8">
           <div>
-            <span className="text-xs uppercase tracking-wider font-bold text-emerald-400">
+            <span className="text-xs uppercase tracking-wider font-bold text-emerald-600 dark:text-emerald-400">
               Active Opportunities
             </span>
-            <h2 className="mt-1 text-2xl sm:text-3xl font-black text-white">
+            <h2 className="mt-1 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
               Featured Projects
             </h2>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
               Explore hand-picked, verified opportunities ready for proposals today.
             </p>
           </div>
@@ -167,15 +167,15 @@ const Home = () => {
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-slate-400 font-medium">
+          <div className="p-12 text-center text-slate-500 dark:text-slate-400 font-medium">
             Loading featured projects...
           </div>
         ) : featuredProjects.length === 0 ? (
-          <div className="p-12 bg-slate-900/80 rounded-2xl border border-slate-800 text-center space-y-2 shadow-sm">
-            <p className="text-lg font-bold text-white">
+          <div className="p-12 bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-2 shadow-sm">
+            <p className="text-lg font-bold text-slate-900 dark:text-white">
               No projects available yet.
             </p>
-            <p className="text-xs text-slate-400">Check back soon or post a new project!</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Check back soon or post a new project!</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

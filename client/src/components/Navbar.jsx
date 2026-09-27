@@ -3,6 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import Button from './Button';
+import ThemeToggle from './ThemeToggle';
 
 const getInitials = (name) => {
   if (!name) return 'U';
@@ -39,7 +40,7 @@ const Navbar = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-md shadow-lg shadow-black/20">
+    <header className="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800/80 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md shadow-xs dark:shadow-lg dark:shadow-black/20 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Brand Logo */}
@@ -48,8 +49,8 @@ const Navbar = () => {
               P
             </span>
             <div className="flex items-center">
-              <span className="text-xl font-extrabold tracking-tight text-white">
-                Pay<span className="text-emerald-400">Lance</span>
+              <span className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                Pay<span className="text-emerald-500 dark:text-emerald-400">Lance</span>
               </span>
             </div>
           </Link>
@@ -63,8 +64,8 @@ const Navbar = () => {
                 className={({ isActive }) =>
                   `px-3 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${
                     isActive
-                      ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20'
-                      : 'text-slate-300 hover:text-white hover:bg-slate-900'
+                      ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20'
+                      : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900'
                   }`
                 }
               >
@@ -75,6 +76,9 @@ const Navbar = () => {
 
           {/* Action Buttons */}
           <div className="hidden md:flex items-center gap-3">
+            {/* Day/Night Theme Toggle */}
+            <ThemeToggle />
+
             {/* HIDE Post a Project button for Freelancers */}
             {!isFreelancer && (
               <Link to="/post-project">
@@ -88,9 +92,9 @@ const Navbar = () => {
               <>
                 <Link
                   to="/profile"
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold text-slate-200 hover:bg-slate-900 transition-colors cursor-pointer border border-slate-800"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors cursor-pointer border border-slate-200 dark:border-slate-800"
                 >
-                  <span className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-xs">
+                  <span className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-xs">
                     {getInitials(user.name)}
                   </span>
                   <span className="max-w-[120px] truncate">{user.name || 'User'}</span>
@@ -99,7 +103,7 @@ const Navbar = () => {
                   size="sm"
                   variant="ghost"
                   onClick={handleLogout}
-                  className="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10"
+                  className="text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 hover:bg-rose-500/10"
                 >
                   Logout
                 </Button>
@@ -120,11 +124,12 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex md:hidden">
+          {/* Mobile Menu & Theme Toggle */}
+          <div className="flex md:hidden items-center gap-2">
+            <ThemeToggle />
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-slate-300 hover:bg-slate-900 focus:outline-none cursor-pointer"
+              className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 focus:outline-none cursor-pointer"
               aria-label="Toggle menu"
             >
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -141,7 +146,7 @@ const Navbar = () => {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-800 bg-slate-950 px-4 pt-3 pb-6 space-y-3 shadow-xl">
+        <div className="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-4 pt-3 pb-6 space-y-3 shadow-xl">
           <div className="space-y-1">
             {navLinks.map((link) => (
               <NavLink
@@ -151,8 +156,8 @@ const Navbar = () => {
                 className={({ isActive }) =>
                   `block px-3 py-2 rounded-lg text-base font-semibold ${
                     isActive
-                      ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20'
-                      : 'text-slate-300 hover:bg-slate-900'
+                      ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900'
                   }`
                 }
               >
@@ -161,7 +166,7 @@ const Navbar = () => {
             ))}
           </div>
 
-          <div className="pt-4 border-t border-slate-800 flex flex-col gap-2">
+          <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-2">
             {!isFreelancer && (
               <Link to="/post-project" onClick={() => setMobileMenuOpen(false)}>
                 <Button size="md" variant="primary" className="w-full">
@@ -175,9 +180,9 @@ const Navbar = () => {
                 <Link
                   to="/profile"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-slate-200 hover:bg-slate-900 rounded-lg transition-colors border border-slate-800"
+                  className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg transition-colors border border-slate-200 dark:border-slate-800"
                 >
-                  <span className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-xs">
+                  <span className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-xs">
                     {getInitials(user.name)}
                   </span>
                   <span>{user.name || 'User'}</span>
@@ -186,7 +191,7 @@ const Navbar = () => {
                   size="md"
                   variant="ghost"
                   onClick={handleLogout}
-                  className="w-full text-rose-400 border border-rose-500/20 hover:bg-rose-500/10"
+                  className="w-full text-rose-600 dark:text-rose-400 border border-rose-500/20 hover:bg-rose-500/10"
                 >
                   Logout
                 </Button>

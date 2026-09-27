@@ -69,7 +69,7 @@ const getStatusBadgeClass = (status) => {
     case 'cancelled':
       return 'bg-rose-500/10 text-rose-400 border-rose-500/30';
     default:
-      return 'bg-slate-800 text-slate-300 border-slate-700';
+      return 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700';
   }
 };
 
@@ -105,7 +105,7 @@ const Dashboard = () => {
     return (
       <div className="p-16 text-center space-y-3">
         <div className="inline-block animate-spin rounded-full h-10 w-10 border-4 border-emerald-500 border-t-transparent" />
-        <p className="text-sm font-medium text-slate-400">Loading your workspace metrics...</p>
+        <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Loading your workspace metrics...</p>
       </div>
     );
   }
@@ -113,7 +113,7 @@ const Dashboard = () => {
   if (error || !dashboardData) {
     return (
       <div className="max-w-2xl mx-auto p-8 text-center space-y-4">
-        <div className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 space-y-3">
+        <div className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300 space-y-3">
           <p className="font-bold text-base">{error || 'Unable to load dashboard.'}</p>
           <Button variant="outline" size="sm" onClick={fetchDashboard}>
             Retry Loading
@@ -128,16 +128,16 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
-    
-      <div className="bg-slate-900 rounded-2xl p-6 sm:p-8 text-white shadow-xl border border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 animate-fade-in relative overflow-hidden">
+      {/* Welcome Banner Card */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 text-slate-900 dark:text-white shadow-md dark:shadow-xl border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 animate-fade-in relative overflow-hidden">
         <div className="relative z-10">
-          <span className="text-emerald-400 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-slate-800 border border-slate-700">
+          <span className="text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
             {isClient ? 'Client Workspace' : 'Freelancer Workspace'}
           </span>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mt-3">
             Welcome back, {user?.name || 'User'}! 👋
           </h1>
-          <p className="text-slate-300 text-sm mt-1 max-w-xl leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-300 text-sm mt-1 max-w-xl leading-relaxed">
             {isClient
               ? 'Manage your active job listings, review proposals, and hire top freelancers today.'
               : 'Explore open projects, track your submitted proposals, and manage active contracts today.'}
@@ -205,45 +205,45 @@ const Dashboard = () => {
             /* CLIENT RECENT PROJECTS & PROPOSALS */
             <div className="space-y-6">
               {/* Client Recent Projects Card */}
-              <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 shadow-sm space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
                   <div>
-                    <h2 className="text-lg font-bold text-white">
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-white">
                       Recent Projects Posted
                     </h2>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       Manage your active listings and milestone deliverables
                     </p>
                   </div>
-                  <Link to="/my-projects" className="text-xs font-bold text-emerald-400 hover:underline">
+                  <Link to="/my-projects" className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
                     View All →
                   </Link>
                 </div>
 
                 {recentProjects.length === 0 ? (
-                  <div className="p-8 text-center bg-slate-800/40 border border-slate-700/50 rounded-xl text-slate-400 text-xs">
-                    No projects posted yet. Click <strong className="text-white">Post Project</strong> above to create your first listing!
+                  <div className="p-8 text-center bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 rounded-xl text-slate-500 dark:text-slate-400 text-xs">
+                    No projects posted yet. Click <strong className="text-slate-900 dark:text-white">Post Project</strong> above to create your first listing!
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {recentProjects.map((p) => (
                       <div
                         key={p._id}
-                        className="p-4 rounded-xl border border-slate-800 hover:border-slate-700 transition-all bg-slate-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                        className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all bg-slate-50 dark:bg-slate-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                       >
                         <div className="space-y-1 min-w-0 flex-1">
                           <Link
                             to={`/projects/${p._id}`}
-                            className="font-bold text-sm text-white hover:text-emerald-400 truncate block"
+                            className="font-bold text-sm text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 truncate block"
                           >
                             {p.title}
                           </Link>
-                          <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400">
-                            <span>Budget: <strong className="text-emerald-400">${p.budget}</strong></span>
+                          <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
+                            <span>Budget: <strong className="text-emerald-600 dark:text-emerald-400">${p.budget}</strong></span>
                             <span>•</span>
                             <span>Deadline: {formatDate(p.deadline)}</span>
                             <span>•</span>
-                            <span>Proposals: <strong className="text-cyan-400">{p.applicationsCount}</strong></span>
+                            <span>Proposals: <strong className="text-cyan-600 dark:text-cyan-400">{p.applicationsCount}</strong></span>
                           </div>
                         </div>
 
@@ -264,23 +264,23 @@ const Dashboard = () => {
               </div>
 
               {/* Client Recent Proposals Received Card */}
-              <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 shadow-sm space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
                   <div>
-                    <h2 className="text-lg font-bold text-white">
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-white">
                       Proposals Received
                     </h2>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       Recent applications submitted by freelancers
                     </p>
                   </div>
-                  <Link to="/applications" className="text-xs font-bold text-emerald-400 hover:underline">
+                  <Link to="/applications" className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
                     View All →
                   </Link>
                 </div>
 
                 {recentApplications.length === 0 ? (
-                  <div className="p-8 text-center bg-slate-800/40 border border-slate-700/50 rounded-xl text-slate-400 text-xs">
+                  <div className="p-8 text-center bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 rounded-xl text-slate-500 dark:text-slate-400 text-xs">
                     No proposals received yet.
                   </div>
                 ) : (
@@ -291,14 +291,14 @@ const Dashboard = () => {
                       return (
                         <div
                           key={app._id}
-                          className="p-4 rounded-xl border border-slate-800 bg-slate-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                          className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                         >
                           <div className="space-y-1">
-                            <p className="text-sm font-bold text-white">
-                              {freelancerName} <span className="text-xs font-medium text-slate-400">for</span> {projectTitle}
+                            <p className="text-sm font-bold text-slate-900 dark:text-white">
+                              {freelancerName} <span className="text-xs font-medium text-slate-500 dark:text-slate-400">for</span> {projectTitle}
                             </p>
-                            <p className="text-xs text-slate-400">
-                              Bid: <strong className="text-emerald-400">${app.bidAmount}</strong> • Submitted {formatDate(app.createdAt)}
+                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                              Bid: <strong className="text-emerald-600 dark:text-emerald-400">${app.bidAmount}</strong> • Submitted {formatDate(app.createdAt)}
                             </p>
                           </div>
 
@@ -316,23 +316,23 @@ const Dashboard = () => {
             /* FREELANCER ACTIVE CONTRACTS & PROPOSALS */
             <div className="space-y-6">
               {/* Freelancer Active Contracts */}
-              <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 shadow-sm space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
                   <div>
-                    <h2 className="text-lg font-bold text-white">
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-white">
                       Active Contracts
                     </h2>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       Projects currently in progress with accepted proposals
                     </p>
                   </div>
-                  <Link to="/my-projects" className="text-xs font-bold text-emerald-400 hover:underline">
+                  <Link to="/my-projects" className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
                     View All →
                   </Link>
                 </div>
 
                 {activeProjects.length === 0 ? (
-                  <div className="p-8 text-center bg-slate-800/40 border border-slate-700/50 rounded-xl text-slate-400 text-xs">
+                  <div className="p-8 text-center bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 rounded-xl text-slate-500 dark:text-slate-400 text-xs">
                     No active contracts currently in progress. Apply to projects to land your next contract!
                   </div>
                 ) : (
@@ -342,17 +342,17 @@ const Dashboard = () => {
                       return (
                         <div
                           key={proj._id}
-                          className="p-4 rounded-xl border border-slate-800 hover:border-slate-700 transition-all bg-slate-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                          className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all bg-slate-50 dark:bg-slate-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                         >
                           <div className="space-y-1">
                             <Link
                               to={`/projects/${proj._id}`}
-                              className="font-bold text-sm text-white hover:text-emerald-400 block"
+                              className="font-bold text-sm text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 block"
                             >
                               {proj.title}
                             </Link>
-                            <p className="text-xs text-slate-400">
-                              Client: <strong className="text-slate-200">{clientName}</strong> • Budget: <strong className="text-emerald-400">${proj.budget}</strong> • Due {formatDate(proj.deadline)}
+                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                              Client: <strong className="text-slate-700 dark:text-slate-200">{clientName}</strong> • Budget: <strong className="text-emerald-600 dark:text-emerald-400">${proj.budget}</strong> • Due {formatDate(proj.deadline)}
                             </p>
                           </div>
 
@@ -367,23 +367,23 @@ const Dashboard = () => {
               </div>
 
               {/* Freelancer Recent Submitted Applications */}
-              <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 shadow-sm space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
                   <div>
-                    <h2 className="text-lg font-bold text-white">
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-white">
                       Submitted Proposals
                     </h2>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       Status of your recent project proposals
                     </p>
                   </div>
-                  <Link to="/applications" className="text-xs font-bold text-emerald-400 hover:underline">
+                  <Link to="/applications" className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
                     View All →
                   </Link>
                 </div>
 
                 {recentApplications.length === 0 ? (
-                  <div className="p-8 text-center bg-slate-800/40 border border-slate-700/50 rounded-xl text-slate-400 text-xs">
+                  <div className="p-8 text-center bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 rounded-xl text-slate-500 dark:text-slate-400 text-xs">
                     No proposals submitted yet. Browse open projects to apply!
                   </div>
                 ) : (
@@ -394,23 +394,23 @@ const Dashboard = () => {
                       return (
                         <div
                           key={app._id}
-                          className="p-4 rounded-xl border border-slate-800 bg-slate-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                          className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                         >
                           <div className="space-y-1">
                             {projId ? (
                               <Link
                                 to={`/projects/${projId}`}
-                                className="font-bold text-sm text-white hover:text-emerald-400 block"
+                                className="font-bold text-sm text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 block"
                               >
                                 {projTitle}
                               </Link>
                             ) : (
-                              <p className="font-bold text-sm text-white">
+                              <p className="font-bold text-sm text-slate-900 dark:text-white">
                                 {projTitle}
                               </p>
                             )}
-                            <p className="text-xs text-slate-400">
-                              Your Bid: <strong className="text-emerald-400">${app.bidAmount}</strong> • Submitted {formatDate(app.createdAt)}
+                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                              Your Bid: <strong className="text-emerald-600 dark:text-emerald-400">${app.bidAmount}</strong> • Submitted {formatDate(app.createdAt)}
                             </p>
                           </div>
 
@@ -428,23 +428,23 @@ const Dashboard = () => {
         </div>
 
         {/* Right Column: Recent Activity Feed */}
-        <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 shadow-sm space-y-6">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs space-y-6">
+          <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
             <div>
-              <h2 className="text-lg font-bold text-white">
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">
                 Recent Activity
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Live alerts on proposals, payments & contract updates
               </p>
             </div>
-            <Link to="/notifications" className="text-xs font-bold text-emerald-400 hover:underline">
+            <Link to="/notifications" className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
               View All →
             </Link>
           </div>
 
           {recentActivity.length === 0 ? (
-            <div className="p-8 text-center bg-slate-800/40 border border-slate-700/50 rounded-xl text-slate-400 text-xs">
+            <div className="p-8 text-center bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 rounded-xl text-slate-500 dark:text-slate-400 text-xs">
               No recent activity found.
             </div>
           ) : (
@@ -455,26 +455,26 @@ const Dashboard = () => {
                     <div className="relative pb-8">
                       {idx !== recentActivity.length - 1 && (
                         <span
-                          className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-slate-800"
+                          className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-slate-200 dark:bg-slate-800"
                           aria-hidden="true"
                         />
                       )}
                       <div className="relative flex space-x-3">
                         <div>
-                          <span className="h-8 w-8 rounded-full bg-slate-800 flex items-center justify-center text-sm shadow-xs border border-slate-700 text-slate-200">
+                          <span className="h-8 w-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-sm shadow-xs border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200">
                             {getActivityIcon(activity.type)}
                           </span>
                         </div>
                         <div className="min-w-0 flex-1 pt-1 flex justify-between space-x-4">
                           <div>
-                            <p className="text-xs font-bold text-white">
+                            <p className="text-xs font-bold text-slate-900 dark:text-white">
                               {activity.title}
                             </p>
-                            <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
                               {activity.desc}
                             </p>
                           </div>
-                          <div className="text-right text-[11px] whitespace-nowrap text-slate-500">
+                          <div className="text-right text-[11px] whitespace-nowrap text-slate-500 dark:text-slate-500">
                             {formatTimeAgo(activity.createdAt)}
                           </div>
                         </div>
@@ -493,21 +493,21 @@ const Dashboard = () => {
 
 // Reusable StatCard component for clean metrics presentation
 const StatCard = ({ title, value, icon, subtitle, positive }) => (
-  <div className="bg-slate-900/80 rounded-2xl p-5 border border-slate-800 shadow-sm hover:border-slate-700 transition-all duration-200 flex flex-col justify-between group">
+  <div className="bg-white dark:bg-slate-900/80 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 flex flex-col justify-between group">
     <div className="flex items-center justify-between">
-      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
         {title}
       </span>
-      <span className="text-xl p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-slate-200 shrink-0">
+      <span className="text-xl p-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 shrink-0">
         {icon}
       </span>
     </div>
     <div className="mt-3">
-      <div className="text-2xl font-extrabold text-white truncate tracking-tight">
+      <div className="text-2xl font-extrabold text-slate-900 dark:text-white truncate tracking-tight">
         {value}
       </div>
       {subtitle && (
-        <p className={`text-xs font-semibold mt-1 ${positive ? 'text-emerald-400' : 'text-slate-400'}`}>
+        <p className={`text-xs font-semibold mt-1 ${positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}>
           {subtitle}
         </p>
       )}

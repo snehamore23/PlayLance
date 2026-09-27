@@ -16,8 +16,8 @@ const Loading = ({ text = 'Loading PayLance...', fullScreen = false }) => {
 
   if (fullScreen) {
     return (
-      <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center z-50">
-        <div className="bg-slate-900 rounded-2xl shadow-xl p-6 border border-slate-800">
+      <div className="fixed inset-0 bg-slate-900/40 dark:bg-slate-950/70 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-6 border border-slate-200 dark:border-slate-800">
           {content}
         </div>
       </div>

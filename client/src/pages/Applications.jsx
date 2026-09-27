@@ -114,14 +114,14 @@ const Applications = () => {
   );
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-slate-100 bg-slate-950">
+    <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-950">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
             Project Applications & Proposals
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
             Review incoming bids, evaluate freelancer proposals, and accept contracts.
           </p>
         </div>
@@ -129,13 +129,13 @@ const Applications = () => {
         {/* Project Selector Dropdown */}
         {projects.length > 0 && (
           <div className="w-full md:w-80">
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-1">
               Select Project
             </label>
             <select
               value={selectedProjectId}
               onChange={handleProjectChange}
-              className="w-full text-sm font-semibold rounded-xl border border-slate-700 bg-slate-900 text-white p-2.5 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 cursor-pointer"
+              className="w-full text-sm font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white p-2.5 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 cursor-pointer"
             >
               {projects.map((p) => {
                 const pId = p._id || p.id;
@@ -152,16 +152,16 @@ const Applications = () => {
       </div>
 
       {loadingProjects ? (
-        <div className="p-12 text-center text-slate-400 font-medium">
+        <div className="p-12 text-center text-slate-600 dark:text-slate-400 font-medium">
           Loading projects...
         </div>
       ) : projects.length === 0 ? (
-        <div className="p-12 bg-slate-900/80 rounded-2xl border border-slate-800 text-center space-y-3 shadow-xs">
+        <div className="p-12 bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-3 shadow-xs">
           <div className="text-3xl">📁</div>
-          <p className="text-lg font-bold text-white">
+          <p className="text-lg font-bold text-slate-900 dark:text-white">
             No projects found
           </p>
-          <p className="text-xs text-slate-400 max-w-sm mx-auto">
+          <p className="text-xs text-slate-600 dark:text-slate-400 max-w-sm mx-auto">
             You must post a project first to receive proposals.
           </p>
           <Link to="/post-project" className="inline-block mt-2">
@@ -174,16 +174,16 @@ const Applications = () => {
         <>
           {/* Selected Project Summary Card */}
           {currentProject && (
-            <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                   Viewing Proposals For
                 </span>
-                <h2 className="text-lg font-black text-white">
+                <h2 className="text-lg font-black text-slate-900 dark:text-white">
                   {currentProject.title}
                 </h2>
-                <div className="text-xs text-slate-400 mt-0.5">
-                  Category: {currentProject.category} • Budget: ${currentProject.budget} • Status: <span className="capitalize font-semibold text-emerald-400">{currentProject.status}</span>
+                <div className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+                  Category: {currentProject.category} • Budget: ${currentProject.budget} • Status: <span className="capitalize font-semibold text-emerald-600 dark:text-emerald-400">{currentProject.status}</span>
                 </div>
               </div>
               <Link to={`/projects/${currentProject._id || currentProject.id}`}>
@@ -196,23 +196,23 @@ const Applications = () => {
 
           {/* Error Message */}
           {error && (
-            <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-sm font-medium">
+            <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300 text-sm font-medium">
               {error}
             </div>
           )}
 
           {/* Applications List */}
           {loadingApps ? (
-            <div className="p-12 text-center text-slate-400 font-medium">
+            <div className="p-12 text-center text-slate-600 dark:text-slate-400 font-medium">
               Loading proposals...
             </div>
           ) : applications.length === 0 ? (
-            <div className="p-12 bg-slate-900/80 rounded-2xl border border-slate-800 text-center space-y-3 shadow-xs">
+            <div className="p-12 bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-3 shadow-xs">
               <div className="text-3xl">✉️</div>
-              <p className="text-lg font-bold text-white">
+              <p className="text-lg font-bold text-slate-900 dark:text-white">
                 No proposals submitted yet
               </p>
-              <p className="text-xs text-slate-400 max-w-sm mx-auto">
+              <p className="text-xs text-slate-600 dark:text-slate-400 max-w-sm mx-auto">
                 No freelancers have applied to this project yet. Check back soon!
               </p>
             </div>
@@ -257,21 +257,21 @@ const Applications = () => {
                 const getStatusBadge = (st) => {
                   const statusStr = (st || 'pending').toLowerCase();
                   if (statusStr === 'accepted') {
-                    return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+                    return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30';
                   }
                   if (statusStr === 'rejected') {
-                    return 'bg-rose-500/10 text-rose-400 border-rose-500/30';
+                    return 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30';
                   }
                   if (statusStr === 'completed') {
-                    return 'bg-purple-500/10 text-purple-400 border-purple-500/30';
+                    return 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30';
                   }
-                  return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+                  return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30';
                 };
 
                 return (
                   <div
                     key={app._id}
-                    className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 shadow-sm hover:border-slate-700 transition-all duration-200 flex flex-col md:flex-row justify-between gap-6"
+                    className="bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 flex flex-col md:flex-row justify-between gap-6"
                   >
                     <div className="space-y-3 flex-1">
                       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -283,15 +283,15 @@ const Applications = () => {
                               className="w-10 h-10 rounded-full object-cover border border-emerald-500"
                             />
                           ) : (
-                            <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold text-xs flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 font-bold text-xs flex items-center justify-center">
                               {initials || 'F'}
                             </div>
                           )}
                           <div>
-                            <h3 className="text-base font-bold text-white">
+                            <h3 className="text-base font-bold text-slate-900 dark:text-white">
                               {freelancerName}
                             </h3>
-                            <p className="text-xs text-slate-400">
+                            <p className="text-xs text-slate-500 dark:text-slate-400">
                               {freelancerEmail} {freelancerRating && `• ${freelancerRating}`}
                             </p>
                           </div>
@@ -306,20 +306,20 @@ const Applications = () => {
                         </span>
                       </div>
 
-                      <div className="text-xs text-slate-400 font-medium">
+                      <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                         Submitted on: <strong>{formattedDate}</strong>
                       </div>
 
-                      <div className="text-sm text-slate-200 font-normal leading-relaxed bg-slate-800 p-4 sm:p-5 rounded-xl border border-slate-700 whitespace-pre-line shadow-inner">
+                      <div className="text-sm text-slate-800 dark:text-slate-200 font-normal leading-relaxed bg-slate-50 dark:bg-slate-800 p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-slate-700 whitespace-pre-line shadow-inner">
                         "{app.proposal}"
                       </div>
                     </div>
 
                     {/* Bid info and buttons */}
-                    <div className="md:w-60 shrink-0 flex flex-col justify-between pt-4 md:pt-0 md:border-l md:border-slate-800 md:pl-6 space-y-4">
+                    <div className="md:w-60 shrink-0 flex flex-col justify-between pt-4 md:pt-0 md:border-l md:border-slate-200 dark:md:border-slate-800 md:pl-6 space-y-4">
                       <div>
-                        <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Bid Amount:</span>
-                        <div className="text-2xl font-black text-emerald-400">
+                        <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">Bid Amount:</span>
+                        <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
                           {formattedBid}
                         </div>
                       </div>

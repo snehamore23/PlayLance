@@ -161,10 +161,10 @@ const Payments = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Payments & Earnings
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
             Manage project payments, view transaction receipts, and track your {isClient ? 'expenditures' : 'earnings'}.
           </p>
         </div>
@@ -175,19 +175,19 @@ const Payments = () => {
         {summaryCards.map((card, idx) => (
           <div
             key={idx}
-            className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 shadow-xs flex flex-col justify-between"
+            className="bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs flex flex-col justify-between"
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 {card.title}
               </span>
               <span className="text-2xl">{card.icon}</span>
             </div>
             <div className="mt-4">
-              <div className="text-2xl sm:text-3xl font-black text-white">
+              <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
                 {card.amount}
               </div>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                 {card.desc}
               </p>
             </div>
@@ -197,24 +197,24 @@ const Payments = () => {
 
       {/* Client Section: Pay for Projects */}
       {isClient && (
-        <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 shadow-xs space-y-4">
+        <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-black text-white">
+              <h2 className="text-lg font-black text-slate-900 dark:text-white">
                 Project Payments
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Pay for projects with an accepted freelancer using Stripe Checkout.
               </p>
             </div>
           </div>
 
           {loadingProjects ? (
-            <div className="p-6 text-center text-xs text-slate-400 font-medium">
+            <div className="p-6 text-center text-xs text-slate-500 dark:text-slate-400 font-medium">
               Loading your projects...
             </div>
           ) : myProjects.length === 0 ? (
-            <div className="p-6 bg-slate-950/60 rounded-xl text-center text-xs text-slate-400 border border-slate-800">
+            <div className="p-6 bg-slate-50 dark:bg-slate-950/60 rounded-xl text-center text-xs text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-800">
               You have no posted projects yet.
             </div>
           ) : (
@@ -228,30 +228,30 @@ const Payments = () => {
                 return (
                   <div
                     key={pId}
-                    className="p-4 rounded-xl border border-slate-800 bg-slate-950/60 flex flex-col justify-between space-y-3"
+                    className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 flex flex-col justify-between space-y-3"
                   >
                     <div>
                       <div className="flex items-center justify-between gap-2">
-                        <span className="inline-block px-2 py-0.5 text-[10px] font-bold rounded-full bg-slate-800 text-slate-300 uppercase tracking-wider">
+                        <span className="inline-block px-2 py-0.5 text-[10px] font-bold rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                           {project.status}
                         </span>
                         {isPaid && (
-                          <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-800">
+                          <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
                             Paid ✓
                           </span>
                         )}
                       </div>
-                      <h4 className="text-sm font-bold text-white mt-2 line-clamp-1">
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mt-2 line-clamp-1">
                         {project.title}
                       </h4>
-                      <p className="text-xs text-emerald-400 mt-1 font-semibold">
+                      <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1 font-semibold">
                         Budget: ${project.budget}
                       </p>
                     </div>
 
                     <div>
                       {isPaid ? (
-                        <div className="w-full py-2 px-3 rounded-lg bg-emerald-950/60 border border-emerald-800/60 text-center text-xs font-bold text-emerald-300">
+                        <div className="w-full py-2 px-3 rounded-lg bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800/60 text-center text-xs font-bold text-emerald-700 dark:text-emerald-300">
                           Payment Completed ✅
                         </div>
                       ) : hasAcceptedFreelancer ? (
@@ -265,7 +265,7 @@ const Payments = () => {
                           {payingProjectId === pId ? 'Connecting to Stripe...' : 'Pay Now 💳'}
                         </Button>
                       ) : (
-                        <div className="w-full py-2 px-3 rounded-lg bg-amber-950/60 border border-amber-800/60 text-center text-xs text-amber-300 font-semibold">
+                        <div className="w-full py-2 px-3 rounded-lg bg-amber-100 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800/60 text-center text-xs text-amber-700 dark:text-amber-300 font-semibold">
                           Awaiting accepted proposal
                         </div>
                       )}
@@ -279,31 +279,31 @@ const Payments = () => {
       )}
 
       {/* Transaction History Table */}
-      <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 shadow-xs space-y-4">
+      <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-black text-white">
+          <h2 className="text-lg font-black text-slate-900 dark:text-white">
             Transaction History
           </h2>
-          <span className="text-xs text-slate-400 font-medium">
+          <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
             {payments.length} total transaction(s)
           </span>
         </div>
 
         {loadingPayments ? (
-          <div className="p-12 text-center text-xs text-slate-400 space-y-2">
+          <div className="p-12 text-center text-xs text-slate-500 dark:text-slate-400 space-y-2">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-emerald-500 mx-auto"></div>
             <p>Loading transactions...</p>
           </div>
         ) : paymentsError ? (
-          <div className="p-6 rounded-xl bg-rose-950/40 border border-rose-800/60 text-rose-300 text-center space-y-2 text-xs">
+          <div className="p-6 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300 text-center space-y-2 text-xs">
             <p className="font-semibold">{paymentsError}</p>
             <Button variant="outline" size="sm" onClick={fetchPayments}>
               Retry
             </Button>
           </div>
         ) : payments.length === 0 ? (
-          <div className="p-12 text-center text-slate-400 space-y-2">
-            <p className="text-sm font-bold text-white">
+          <div className="p-12 text-center text-slate-500 dark:text-slate-400 space-y-2">
+            <p className="text-sm font-bold text-slate-900 dark:text-white">
               No transactions found.
             </p>
             <p className="text-xs">
@@ -316,7 +316,7 @@ const Payments = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-slate-800 text-xs font-bold uppercase tracking-wider text-slate-400">
+                <tr className="border-b border-slate-200 dark:border-slate-800 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   <th className="py-3 px-4">Transaction ID</th>
                   <th className="py-3 px-4">Project</th>
                   <th className="py-3 px-4">{isClient ? 'Freelancer' : 'Client'}</th>
@@ -325,7 +325,7 @@ const Payments = () => {
                   <th className="py-3 px-4 text-right">Amount</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 text-sm">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60 text-sm">
                 {payments.map((p) => {
                   const projectTitle = p.project?.title || 'Project Payment';
                   const otherParty = isClient ? p.freelancer : p.client;
@@ -334,30 +334,30 @@ const Payments = () => {
                   return (
                     <tr
                       key={p._id}
-                      className="hover:bg-slate-800/50 transition-colors"
+                      className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                     >
-                      <td className="py-4 px-4 font-mono text-xs font-bold text-emerald-400">
+                      <td className="py-4 px-4 font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">
                         {p.transactionId || p._id}
                       </td>
                       <td className="py-4 px-4">
-                        <div className="font-bold text-white text-xs sm:text-sm">
+                        <div className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
                           {projectTitle}
                         </div>
                       </td>
-                      <td className="py-4 px-4 text-xs font-semibold text-slate-300">
+                      <td className="py-4 px-4 text-xs font-semibold text-slate-700 dark:text-slate-300">
                         {otherPartyName}
                       </td>
-                      <td className="py-4 px-4 text-xs text-slate-400">
+                      <td className="py-4 px-4 text-xs text-slate-500 dark:text-slate-400">
                         {formatDate(p.createdAt)}
                       </td>
                       <td className="py-4 px-4">
                         <span
                           className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider ${
                             p.status === 'paid'
-                              ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-800/60'
+                              ? 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800/60'
                               : p.status === 'pending'
-                              ? 'bg-amber-950/80 text-amber-300 border border-amber-800/60'
-                              : 'bg-rose-950/80 text-rose-300 border border-rose-800/60'
+                              ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800/60'
+                              : 'bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-800/60'
                           }`}
                         >
                           {p.status}

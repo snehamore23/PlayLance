@@ -172,10 +172,10 @@ const Notifications = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Notifications
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
             Stay up to date with proposals, payments, and platform milestones.
           </p>
         </div>
@@ -188,7 +188,7 @@ const Notifications = () => {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex space-x-2 border-b border-slate-800 pb-2">
+      <div className="flex space-x-2 border-b border-slate-200 dark:border-slate-800 pb-2">
         {['All', 'Unread'].map((tab) => (
           <button
             key={tab}
@@ -196,7 +196,7 @@ const Notifications = () => {
             className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors cursor-pointer ${
               filter === tab
                 ? 'bg-emerald-600 text-white shadow-xs'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
             {tab}
@@ -206,12 +206,12 @@ const Notifications = () => {
 
       {/* Loading & Content List */}
       {loading ? (
-        <div className="p-12 text-center bg-slate-900/80 rounded-2xl border border-slate-800">
+        <div className="p-12 text-center bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-emerald-500 border-t-transparent" />
-          <p className="mt-2 text-sm text-slate-400">Loading notifications...</p>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">Loading notifications...</p>
         </div>
       ) : notifications.length === 0 ? (
-        <div className="p-12 text-center bg-slate-900/80 rounded-2xl border border-slate-800 text-slate-400">
+        <div className="p-12 text-center bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400">
           {filter === 'Unread' ? 'No unread notifications found.' : 'No notifications found.'}
         </div>
       ) : (
@@ -226,11 +226,11 @@ const Notifications = () => {
                 onClick={() => handleNotificationClick(n)}
                 className={`p-5 rounded-2xl border transition-all cursor-pointer flex items-start gap-4 shadow-xs relative group ${
                   isRead
-                    ? 'bg-slate-900/80 border-slate-800 hover:border-slate-700'
-                    : 'bg-slate-900 border-emerald-500/40 hover:border-emerald-500/70'
+                    ? 'bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                    : 'bg-slate-50 dark:bg-slate-900 border-emerald-500/40 hover:border-emerald-500/70'
                 }`}
               >
-                <div className="text-2xl p-2.5 bg-slate-800 text-emerald-400 rounded-xl shadow-xs shrink-0 border border-slate-700">
+                <div className="text-2xl p-2.5 bg-slate-100 dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 rounded-xl shadow-xs shrink-0 border border-slate-200 dark:border-slate-700">
                   {meta.icon}
                 </div>
 
@@ -239,17 +239,17 @@ const Notifications = () => {
                     <h3
                       className={`text-sm font-bold truncate ${
                         isRead
-                          ? 'text-slate-200'
-                          : 'text-emerald-400 font-extrabold'
+                          ? 'text-slate-800 dark:text-slate-200'
+                          : 'text-emerald-600 dark:text-emerald-400 font-extrabold'
                       }`}
                     >
                       {meta.title}
                     </h3>
-                    <span className="text-[11px] text-slate-400 shrink-0">
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400 shrink-0">
                       {formatTime(n.createdAt)}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                  <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
                     {n.message}
                   </p>
                 </div>
@@ -263,7 +263,7 @@ const Notifications = () => {
                   )}
                   <button
                     onClick={(e) => handleDelete(e, n._id)}
-                    className="p-1.5 text-slate-400 hover:text-rose-400 rounded-lg hover:bg-slate-800 transition-colors opacity-80 group-hover:opacity-100 cursor-pointer"
+                    className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors opacity-80 group-hover:opacity-100 cursor-pointer"
                     title="Delete Notification"
                     aria-label="Delete notification"
                   >

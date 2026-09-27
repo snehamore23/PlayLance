@@ -40,15 +40,15 @@ const EditProject = () => {
     <div className="max-w-4xl mx-auto py-6 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           Edit Project #{id || '1'}
         </h1>
-        <p className="text-sm text-slate-400 mt-1">
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
           Update the scope, timeline, or budget requirements for this PayLance listing.
         </p>
       </div>
 
-      <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 sm:p-10 shadow-xs">
+      <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-10 shadow-xs">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Title */}
           <Input
@@ -62,15 +62,15 @@ const EditProject = () => {
 
           {/* Category */}
           <div className="space-y-1.5">
-            <label htmlFor="category" className="block text-xs font-bold uppercase tracking-wider text-slate-300">
-              Project Category <span className="text-emerald-400">*</span>
+            <label htmlFor="category" className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              Project Category <span className="text-emerald-500 dark:text-emerald-400">*</span>
             </label>
             <select
               id="category"
               name="category"
               value={formData.category}
               onChange={handleChange}
-              className="block w-full rounded-xl border border-slate-700 py-2.5 px-3.5 bg-slate-900 text-slate-100 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-medium cursor-pointer"
+              className="block w-full rounded-xl border border-slate-300 dark:border-slate-700 py-2.5 px-3.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-medium cursor-pointer"
             >
               {categories.map((cat) => (
                 <option key={cat} value={cat}>
@@ -82,8 +82,8 @@ const EditProject = () => {
 
           {/* Description */}
           <div className="space-y-1.5">
-            <label htmlFor="description" className="block text-xs font-bold uppercase tracking-wider text-slate-300">
-              Detailed Description <span className="text-emerald-400">*</span>
+            <label htmlFor="description" className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              Detailed Description <span className="text-emerald-500 dark:text-emerald-400">*</span>
             </label>
             <textarea
               id="description"
@@ -92,7 +92,7 @@ const EditProject = () => {
               required
               value={formData.description}
               onChange={handleChange}
-              className="block w-full rounded-xl border border-slate-700 py-2.5 px-3.5 bg-slate-900 text-slate-100 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-medium placeholder-slate-500"
+              className="block w-full rounded-xl border border-slate-300 dark:border-slate-700 py-2.5 px-3.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-medium placeholder-slate-400 dark:placeholder-slate-500"
             />
           </div>
 
@@ -128,7 +128,7 @@ const EditProject = () => {
           </div>
 
           {/* Buttons */}
-          <div className="pt-6 border-t border-slate-800 flex items-center justify-end gap-4">
+          <div className="pt-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-4">
             <Button
               variant="outline"
               size="md"

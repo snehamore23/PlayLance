@@ -169,7 +169,7 @@ const Profile = () => {
                   {exp.title || 'Role'}
                 </h3>
                 {exp.period && (
-                  <span className="text-xs text-slate-400 font-medium">
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                     {exp.period}
                   </span>
                 )}
@@ -286,7 +286,7 @@ const Profile = () => {
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Profile Header Card */}
-      <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-xs relative overflow-hidden">
+      <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs relative overflow-hidden">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
             {/* Avatar */}
@@ -303,31 +303,31 @@ const Profile = () => {
                 </div>
               )}
               <span
-                className="absolute bottom-1 right-1 w-4 h-4 bg-emerald-500 border-2 border-slate-900 rounded-full"
+                className="absolute bottom-1 right-1 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full"
                 title="Online"
               />
             </div>
 
             <div className="space-y-1.5">
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-2xl sm:text-3xl font-black text-white">
+                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
                   {profileData.name || 'Not added yet'}
                 </h1>
-                <span className="px-3 py-1 rounded-full text-xs font-bold capitalize bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                <span className="px-3 py-1 rounded-full text-xs font-bold capitalize bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
                   {profileData.role || 'User'}
                 </span>
               </div>
-              <p className="text-base text-slate-300 font-semibold capitalize">
+              <p className="text-base text-slate-700 dark:text-slate-300 font-semibold capitalize">
                 {profileData.role ? `${profileData.role} Profile` : 'Not added yet'}
               </p>
-              <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400 font-medium">
+              <div className="flex flex-wrap items-center gap-4 text-xs text-slate-600 dark:text-slate-400 font-medium">
                 <span className="flex items-center gap-1">
                   📍 {profileData.location || 'Not added yet'}
                 </span>
                 <span className="flex items-center gap-1">
                   ✉️ {profileData.email || 'Not added yet'}
                 </span>
-                <span className="flex items-center gap-1 font-bold text-amber-400">
+                <span className="flex items-center gap-1 font-bold text-amber-500 dark:text-amber-400">
                   ⭐ {profileData.rating !== undefined && profileData.rating !== null ? `${profileData.rating} / 5` : 'Not added yet'}
                 </span>
               </div>
@@ -352,27 +352,27 @@ const Profile = () => {
 
         {/* Edit Form */}
         {isEditing ? (
-          <form onSubmit={handleSave} className="mt-8 pt-6 border-t border-slate-800 space-y-4">
-            <h2 className="text-base font-bold text-white mb-4">
+          <form onSubmit={handleSave} className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 space-y-4">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white mb-4">
               Edit Profile Details
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
                   Full Name
                 </label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 text-sm rounded-xl border border-slate-700 bg-slate-900 text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-medium"
+                  className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-medium"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
                   Location
                 </label>
                 <input
@@ -380,13 +380,13 @@ const Profile = () => {
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                   placeholder="e.g. Austin, Texas, USA"
-                  className="w-full px-3 py-2 text-sm rounded-xl border border-slate-700 bg-slate-900 text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-medium placeholder-slate-500"
+                  className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-medium placeholder-slate-400 dark:placeholder-slate-500"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
                 Bio / Professional Summary
               </label>
               <textarea
@@ -394,12 +394,12 @@ const Profile = () => {
                 value={formData.bio}
                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                 placeholder="Tell us about yourself and your professional expertise..."
-                className="w-full px-3 py-2 text-sm rounded-xl border border-slate-700 bg-slate-900 text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-medium placeholder-slate-500"
+                className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-medium placeholder-slate-400 dark:placeholder-slate-500"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
                 Core Technical Skills (comma separated)
               </label>
               <input
@@ -407,12 +407,12 @@ const Profile = () => {
                 value={formData.skills}
                 onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
                 placeholder="React.js, Node.js, Express, MongoDB"
-                className="w-full px-3 py-2 text-sm rounded-xl border border-slate-700 bg-slate-900 text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-medium placeholder-slate-500"
+                className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-medium placeholder-slate-400 dark:placeholder-slate-500"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
                 Work Experience
               </label>
               <textarea
@@ -420,12 +420,12 @@ const Profile = () => {
                 value={formData.experience}
                 onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
                 placeholder="Describe your work experience and key accomplishments..."
-                className="w-full px-3 py-2 text-sm rounded-xl border border-slate-700 bg-slate-900 text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-medium placeholder-slate-500"
+                className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-medium placeholder-slate-400 dark:placeholder-slate-500"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
                 Portfolio Projects / Links (comma separated)
               </label>
               <input
@@ -433,7 +433,7 @@ const Profile = () => {
                 value={formData.portfolio}
                 onChange={(e) => setFormData({ ...formData, portfolio: e.target.value })}
                 placeholder="https://github.com/myproject, https://myportfolio.com"
-                className="w-full px-3 py-2 text-sm rounded-xl border border-slate-700 bg-slate-900 text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-medium placeholder-slate-500"
+                className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-medium placeholder-slate-400 dark:placeholder-slate-500"
               />
             </div>
 
@@ -455,18 +455,18 @@ const Profile = () => {
         ) : (
           <>
             {/* Bio */}
-            <div className="mt-8 pt-6 border-t border-slate-800">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+            <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
                 Professional Summary
               </h2>
-              <p className="text-slate-300 text-sm leading-relaxed max-w-4xl font-normal">
+              <p className="text-slate-800 dark:text-slate-300 text-sm leading-relaxed max-w-4xl font-normal">
                 {profileData.bio || 'Not added yet'}
               </p>
             </div>
 
             {/* Skills */}
-            <div className="mt-6 pt-6 border-t border-slate-800">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+            <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-800">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-3">
                 Core Technical Skills
               </h2>
               {renderSkills(profileData.skills)}
@@ -479,9 +479,9 @@ const Profile = () => {
       {!isEditing && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Experience Column */}
-          <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-xs space-y-6">
+          <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-black text-white flex items-center gap-2">
+              <h2 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
                 <span>💼</span> Work Experience
               </h2>
             </div>
@@ -490,9 +490,9 @@ const Profile = () => {
           </div>
 
           {/* Portfolio Showcase Column */}
-          <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-xs space-y-6">
+          <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-black text-white flex items-center gap-2">
+              <h2 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
                 <span>🎨</span> Portfolio Projects
               </h2>
             </div>
@@ -504,24 +504,24 @@ const Profile = () => {
 
       {/* Received Reviews Section */}
       {!isEditing && (
-        <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-xs space-y-6">
+        <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-black text-white flex items-center gap-2">
+              <h2 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
                 <span>⭐</span> Verified Client & Freelancer Reviews ({userReviews.length})
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
                 Contract feedback earned on completed PayLance projects.
               </p>
             </div>
           </div>
 
           {userReviews.length === 0 ? (
-            <div className="p-8 bg-slate-950/60 rounded-xl text-center text-xs text-slate-400 space-y-1 border border-slate-800">
-              <p className="font-bold text-white">
+            <div className="p-8 bg-slate-50 dark:bg-slate-950/60 rounded-xl text-center text-xs text-slate-600 dark:text-slate-400 space-y-1 border border-slate-200 dark:border-slate-800">
+              <p className="font-bold text-slate-900 dark:text-white">
                 No reviews received yet.
               </p>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 Reviews submitted by contract partners will appear here.
               </p>
             </div>
@@ -533,7 +533,7 @@ const Profile = () => {
                 return (
                   <div
                     key={r._id}
-                    className="p-4 rounded-xl border border-slate-800 bg-slate-950/60 space-y-2"
+                    className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 space-y-2"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
@@ -541,7 +541,7 @@ const Profile = () => {
                           <img
                             src={r.reviewer.profileImage}
                             alt={reviewerName}
-                            className="w-8 h-8 rounded-full object-cover border border-slate-700"
+                            className="w-8 h-8 rounded-full object-cover border border-slate-300 dark:border-slate-700"
                           />
                         ) : (
                           <div className="w-8 h-8 rounded-full bg-emerald-600 text-slate-950 font-bold text-xs flex items-center justify-center">
@@ -549,20 +549,20 @@ const Profile = () => {
                           </div>
                         )}
                         <div>
-                          <span className="text-xs font-bold text-white">
+                          <span className="text-xs font-bold text-slate-900 dark:text-white">
                             {reviewerName}
                           </span>
-                          <p className="text-[10px] font-semibold text-emerald-400">
+                          <p className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
                             {projectTitle}
                           </p>
                         </div>
                       </div>
-                      <span className="text-amber-400 text-xs font-bold">
+                      <span className="text-amber-500 dark:text-amber-400 text-xs font-bold">
                         {'★'.repeat(r.rating)} ({r.rating}/5)
                       </span>
                     </div>
                     {r.comment && (
-                      <p className="text-xs text-slate-300 leading-relaxed pt-1">
+                      <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed pt-1">
                         "{r.comment}"
                       </p>
                     )}

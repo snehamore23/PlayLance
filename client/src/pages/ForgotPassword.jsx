@@ -36,33 +36,33 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 animate-fade-in bg-slate-950">
-      <div className="w-full max-w-md space-y-8 bg-slate-900/90 p-8 sm:p-10 rounded-2xl border border-slate-800 shadow-xl animate-scale-in">
+    <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 animate-fade-in bg-slate-50 dark:bg-slate-950">
+      <div className="w-full max-w-md space-y-8 bg-white dark:bg-slate-900/90 p-8 sm:p-10 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl animate-scale-in">
         <div className="text-center space-y-2">
           <Link to="/" className="inline-flex items-center gap-2.5 group">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 text-slate-950 font-black text-xl shadow-md group-hover:scale-105 transition-transform">
               P
             </span>
-            <span className="text-2xl font-black tracking-tight text-white">
-              Pay<span className="text-emerald-400">Lance</span>
+            <span className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+              Pay<span className="text-emerald-500 dark:text-emerald-400">Lance</span>
             </span>
           </Link>
-          <h2 className="text-xl font-black tracking-tight text-white pt-2">
+          <h2 className="text-xl font-black tracking-tight text-slate-900 dark:text-white pt-2">
             Reset your password
           </h2>
-          <p className="text-xs text-slate-400 font-medium leading-relaxed">
+          <p className="text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
             Enter the email address associated with your PayLance account to receive password recovery instructions.
           </p>
         </div>
 
         {errorMsg && (
-          <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-semibold animate-slide-down">
+          <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300 text-xs font-semibold animate-slide-down">
             {errorMsg}
           </div>
         )}
 
         {successMsg && (
-          <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-semibold animate-slide-down">
+          <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-300 text-xs font-semibold animate-slide-down">
             {successMsg}
           </div>
         )}
@@ -99,11 +99,11 @@ const ForgotPassword = () => {
           </Button>
         </form>
 
-        <div className="pt-2 text-center text-xs text-slate-400 font-medium">
+        <div className="pt-2 text-center text-xs text-slate-600 dark:text-slate-400 font-medium">
           Remembered your password?{' '}
           <Link
             to="/login"
-            className="font-bold text-emerald-400 hover:text-emerald-300 hover:underline"
+            className="font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 hover:underline"
           >
             Sign In
           </Link>

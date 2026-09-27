@@ -317,7 +317,7 @@ const ProjectDetails = () => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center text-slate-400 font-medium">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center text-slate-500 dark:text-slate-400 font-medium">
         Loading project details...
       </div>
     );
@@ -397,21 +397,21 @@ const ProjectDetails = () => {
   const isOpen = status === 'open';
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 text-slate-100 bg-slate-950">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-950">
       {/* Breadcrumb & Navigation */}
-      <div className="flex items-center justify-between text-xs text-slate-400">
+      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
         <div className="flex items-center gap-2">
           <Link to="/projects" className="hover:text-emerald-400 font-medium">
             Projects
           </Link>
           <span>/</span>
-          <span className="text-white font-bold truncate max-w-[200px]">
+          <span className="text-slate-900 dark:text-white font-bold truncate max-w-[200px]">
             {title}
           </span>
         </div>
         <Link
           to="/projects"
-          className="text-emerald-400 font-bold hover:underline"
+          className="text-emerald-500 dark:text-emerald-400 font-bold hover:underline"
         >
           ← Back to all projects
         </Link>
@@ -420,9 +420,9 @@ const ProjectDetails = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Details Column */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700">
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">
                 {category || 'General'}
               </span>
               <span
@@ -435,11 +435,11 @@ const ProjectDetails = () => {
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-black text-white leading-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white leading-tight">
               {title}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400 pb-2 border-b border-slate-800 font-medium">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400 pb-2 border-b border-slate-200 dark:border-slate-800 font-medium">
               <span>Posted on {formattedPostedDate}</span>
               <span>•</span>
               <span>{applications.length} proposal(s) received</span>
@@ -447,25 +447,25 @@ const ProjectDetails = () => {
 
             {/* Description */}
             <div className="space-y-3">
-              <h2 className="text-base font-black text-white">
+              <h2 className="text-base font-black text-slate-900 dark:text-white">
                 Project Description
               </h2>
-              <div className="text-sm text-slate-300 leading-relaxed whitespace-pre-line font-normal">
+              <div className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line font-normal">
                 {description}
               </div>
             </div>
 
             {/* Skills Required */}
             {skills && skills.length > 0 && (
-              <div className="pt-4 border-t border-slate-800 space-y-3">
-                <h2 className="text-base font-black text-white">
+              <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-3">
+                <h2 className="text-base font-black text-slate-900 dark:text-white">
                   Skills & Expertise
                 </h2>
                 <div className="flex flex-wrap gap-2">
                   {skills.map((skill, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700"
+                      className="px-3 py-1 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700"
                     >
                       {typeof skill === 'string' ? skill : String(skill)}
                     </span>
@@ -477,30 +477,30 @@ const ProjectDetails = () => {
 
           {/* Apply For This Project Section (for Freelancer role when project is open) */}
           {isFreelancerUser && (
-            <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-sm space-y-4">
-              <h2 className="text-lg font-bold text-white flex items-center gap-2">
+            <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm space-y-4">
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <span>📝</span> Apply for this Project
               </h2>
 
               {hasApplied ? (
                 <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-5 text-center space-y-2">
                   <span className="text-2xl">✅</span>
-                  <h3 className="text-base font-bold text-emerald-400">
+                  <h3 className="text-base font-bold text-emerald-600 dark:text-emerald-400">
                     Already Applied
                   </h3>
-                  <p className="text-xs text-slate-300">
+                  <p className="text-xs text-slate-600 dark:text-slate-300">
                     You have already submitted a proposal for this project.
                   </p>
                 </div>
               ) : !isOpen ? (
-                <div className="bg-slate-800 rounded-xl p-4 text-center text-slate-400 text-xs font-semibold">
+                <div className="bg-slate-100 dark:bg-slate-800 rounded-xl p-4 text-center text-slate-600 dark:text-slate-400 text-xs font-semibold">
                   This project is currently <span className="capitalize">{status}</span> and is not accepting new proposals.
                 </div>
               ) : (
                 <form onSubmit={handleProposalSubmit} className="space-y-4 pt-2">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
-                      Your Bid Amount ($ USD) <span className="text-rose-400">*</span>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                      Your Bid Amount ($ USD) <span className="text-rose-500 dark:text-rose-400">*</span>
                     </label>
                     <input
                       type="number"
@@ -510,13 +510,13 @@ const ProjectDetails = () => {
                       onChange={(e) => setBidAmountInput(e.target.value)}
                       placeholder="e.g. 2500"
                       disabled={submitting}
-                      className="w-full text-sm rounded-lg border border-slate-700 p-2.5 bg-slate-900 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+                      className="w-full text-sm rounded-lg border border-slate-300 dark:border-slate-700 p-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
-                      Proposal / Cover Letter <span className="text-rose-400">*</span>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                      Proposal / Cover Letter <span className="text-rose-500 dark:text-rose-400">*</span>
                     </label>
                     <textarea
                       rows={5}
@@ -525,7 +525,7 @@ const ProjectDetails = () => {
                       onChange={(e) => setProposalInput(e.target.value)}
                       placeholder="Describe your relevant experience, technical approach, and delivery timeline..."
                       disabled={submitting}
-                      className="w-full text-sm rounded-lg border border-slate-700 p-2.5 bg-slate-900 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+                      className="w-full text-sm rounded-lg border border-slate-300 dark:border-slate-700 p-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
                     />
                   </div>
 
@@ -543,27 +543,27 @@ const ProjectDetails = () => {
             </div>
           )}
           {/* Project Reviews Section */}
-          <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                   <span>⭐</span> Project Reviews ({reviews.length})
                 </h2>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   Testimonials and contract feedback submitted for this project.
                 </p>
                 {!canReview && (
                   <p className="text-xs font-medium mt-1">
                     {!isCompleted ? (
-                      <span className="text-amber-400">
+                      <span className="text-amber-600 dark:text-amber-400">
                         Reviews become available once the project is completed.
                       </span>
                     ) : isCompleted && isParticipant && hasReviewed ? (
-                      <span className="text-emerald-400">
+                      <span className="text-emerald-600 dark:text-emerald-400">
                         You already reviewed this project. ✓
                       </span>
                     ) : isCompleted && !isParticipant ? (
-                      <span className="text-slate-400">
+                      <span className="text-slate-500 dark:text-slate-400">
                         Only the client and hired freelancer can review this project.
                       </span>
                     ) : null}
@@ -583,8 +583,8 @@ const ProjectDetails = () => {
             </div>
 
             {reviews.length === 0 ? (
-              <div className="p-6 bg-slate-800/40 rounded-xl text-center text-xs text-slate-400 space-y-1">
-                <p className="font-semibold text-slate-300">
+              <div className="p-6 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800/60 rounded-xl text-center text-xs text-slate-500 dark:text-slate-400 space-y-1">
+                <p className="font-semibold text-slate-700 dark:text-slate-300">
                   No reviews submitted for this project yet.
                 </p>
               </div>
@@ -596,7 +596,7 @@ const ProjectDetails = () => {
                   return (
                     <div
                       key={r._id}
-                      className="p-4 rounded-xl border border-slate-800 bg-slate-800/40 space-y-2"
+                      className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 space-y-2"
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div className="flex items-center gap-2.5">
@@ -607,25 +607,25 @@ const ProjectDetails = () => {
                               className="w-8 h-8 rounded-full object-cover"
                             />
                           ) : (
-                            <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold text-xs flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 font-bold text-xs flex items-center justify-center">
                               {revName.slice(0, 2).toUpperCase()}
                             </div>
                           )}
                           <div>
-                            <span className="text-xs font-bold text-white">
+                            <span className="text-xs font-bold text-slate-900 dark:text-white">
                               {revName}
                             </span>
-                            <span className="text-[11px] text-slate-400 ml-2 capitalize">
+                            <span className="text-[11px] text-slate-500 dark:text-slate-400 ml-2 capitalize">
                               ({revRole})
                             </span>
                           </div>
                         </div>
-                        <div className="text-amber-400 text-xs font-bold">
+                        <div className="text-amber-500 dark:text-amber-400 text-xs font-bold">
                           {'★'.repeat(r.rating)} ({r.rating}/5)
                         </div>
                       </div>
                       {r.comment && (
-                        <p className="text-xs text-slate-300 leading-relaxed pl-10">
+                        <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed pl-10">
                           "{r.comment}"
                         </p>
                       )}
@@ -640,26 +640,26 @@ const ProjectDetails = () => {
         {/* Sidebar Info Column - Sticky on Desktop */}
         <div className="space-y-6 lg:sticky lg:top-24 self-start">
           {/* Action Card */}
-          <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 shadow-sm space-y-5">
+          <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-5">
             <div>
-              <span className="text-xs uppercase tracking-wider font-bold text-slate-400">
+              <span className="text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400">
                 Project Budget
               </span>
-              <div className="text-3xl font-black text-emerald-400 mt-1">
+              <div className="text-3xl font-black text-emerald-500 dark:text-emerald-400 mt-1">
                 {formattedBudget}
               </div>
             </div>
 
-            <div className="space-y-2 text-xs text-slate-300 pt-2 border-t border-slate-800 font-medium">
+            <div className="space-y-2 text-xs text-slate-700 dark:text-slate-300 pt-2 border-t border-slate-200 dark:border-slate-800 font-medium">
               <div className="flex justify-between py-1">
                 <span>Deadline / Est. Duration:</span>
-                <span className="font-bold text-white">
+                <span className="font-bold text-slate-900 dark:text-white">
                   {formattedDeadline}
                 </span>
               </div>
               <div className="flex justify-between py-1">
                 <span>Escrow Protection:</span>
-                <span className="font-bold text-emerald-400">
+                <span className="font-bold text-emerald-500 dark:text-emerald-400">
                   Guaranteed
                 </span>
               </div>
@@ -735,26 +735,26 @@ const ProjectDetails = () => {
           </div>
 
           {/* Client Information Card */}
-          <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 shadow-sm space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+          <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-4">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               About the Client
             </h3>
 
             <div className="space-y-3 text-sm">
-              <div className="font-black text-white text-base">
+              <div className="font-black text-slate-900 dark:text-white text-base">
                 {clientObj.name || 'Client'}
               </div>
 
               {clientObj.email && (
-                <div className="text-xs text-slate-400 font-medium">
+                <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                   ✉️ {clientObj.email}
                 </div>
               )}
 
-              <div className="space-y-2 text-xs text-slate-300 pt-2 border-t border-slate-800 font-medium">
+              <div className="space-y-2 text-xs text-slate-700 dark:text-slate-300 pt-2 border-t border-slate-200 dark:border-slate-800 font-medium">
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Payment Status:</span>
-                  <span className="font-bold text-emerald-400">Verified ✓</span>
+                  <span className="text-slate-500 dark:text-slate-400">Payment Status:</span>
+                  <span className="font-bold text-emerald-500 dark:text-emerald-400">Verified ✓</span>
                 </div>
               </div>
             </div>
@@ -764,32 +764,32 @@ const ProjectDetails = () => {
 
       {/* Apply Proposal Modal */}
       {showApplyModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-slate-950/80 backdrop-blur-xs">
           <form
             onSubmit={handleProposalSubmit}
-            className="bg-slate-900 rounded-2xl border border-slate-800 p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl"
+            className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl"
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-white">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                 Submit Your Proposal
               </h3>
               <button
                 type="button"
                 onClick={() => setShowApplyModal(false)}
-                className="text-slate-400 hover:text-white text-lg"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-white text-lg"
               >
                 ✕
               </button>
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Applying for:{' '}
-              <strong className="text-white">{title}</strong>
+              <strong className="text-slate-900 dark:text-white">{title}</strong>
             </p>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Your Bid Amount ($ USD) <span className="text-rose-400">*</span>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Your Bid Amount ($ USD) <span className="text-rose-500 dark:text-rose-400">*</span>
                 </label>
                 <input
                   type="number"
@@ -797,13 +797,13 @@ const ProjectDetails = () => {
                   required
                   value={bidAmountInput}
                   onChange={(e) => setBidAmountInput(e.target.value)}
-                  className="w-full text-sm rounded-lg border border-slate-700 p-2.5 bg-slate-900 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full text-sm rounded-lg border border-slate-300 dark:border-slate-700 p-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Cover Letter / Proposal <span className="text-rose-400">*</span>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Cover Letter / Proposal <span className="text-rose-500 dark:text-rose-400">*</span>
                 </label>
                 <textarea
                   rows={4}
@@ -811,7 +811,7 @@ const ProjectDetails = () => {
                   value={proposalInput}
                   onChange={(e) => setProposalInput(e.target.value)}
                   placeholder="Describe your relevant experience and why you are the best fit for this project..."
-                  className="w-full text-sm rounded-lg border border-slate-700 p-2.5 bg-slate-900 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full text-sm rounded-lg border border-slate-300 dark:border-slate-700 p-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
             </div>
@@ -836,37 +836,37 @@ const ProjectDetails = () => {
 
       {/* Leave Review Modal */}
       {showReviewModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-slate-950/80 backdrop-blur-xs">
           <form
             onSubmit={handleReviewSubmit}
-            className="bg-slate-900 rounded-2xl border border-slate-800 p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl"
+            className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl"
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <span>⭐</span> Leave a Contract Review
               </h3>
               <button
                 type="button"
                 onClick={() => setShowReviewModal(false)}
-                className="text-slate-400 hover:text-white text-lg"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-white text-lg"
               >
                 ✕
               </button>
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Project:{' '}
-              <strong className="text-white">{title}</strong>
+              <strong className="text-slate-900 dark:text-white">{title}</strong>
             </p>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Overall Rating (1 to 5 Stars) <span className="text-rose-400">*</span>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Overall Rating (1 to 5 Stars) <span className="text-rose-500 dark:text-rose-400">*</span>
                 </label>
                 <select
                   value={reviewRating}
                   onChange={(e) => setReviewRating(Number(e.target.value))}
-                  className="w-full text-sm rounded-lg border border-slate-700 p-2.5 bg-slate-900 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full text-sm rounded-lg border border-slate-300 dark:border-slate-700 p-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 >
                   <option value={5}>⭐⭐⭐⭐⭐ (5 - Exceptional)</option>
                   <option value={4}>⭐⭐⭐⭐ (4 - Very Good)</option>
@@ -877,7 +877,7 @@ const ProjectDetails = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Written Feedback / Comment
                 </label>
                 <textarea
@@ -885,7 +885,7 @@ const ProjectDetails = () => {
                   value={reviewComment}
                   onChange={(e) => setReviewComment(e.target.value)}
                   placeholder="Share details of your experience working together on this project..."
-                  className="w-full text-sm rounded-lg border border-slate-700 p-2.5 bg-slate-900 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full text-sm rounded-lg border border-slate-300 dark:border-slate-700 p-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
             </div>
@@ -910,22 +910,22 @@ const ProjectDetails = () => {
 
       {/* Mark as Completed Confirmation Modal */}
       {showCompleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs">
-          <div className="bg-slate-900 rounded-2xl border border-slate-800 p-6 sm:p-8 max-w-md w-full space-y-5 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-slate-950/80 backdrop-blur-xs">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 max-w-md w-full space-y-5 shadow-2xl">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <span>✅</span> Mark Project as Completed?
               </h3>
               <button
                 type="button"
                 onClick={() => setShowCompleteModal(false)}
-                className="text-slate-400 hover:text-white text-lg"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-white text-lg"
                 disabled={completing}
               >
                 ✕
               </button>
             </div>
-            <p className="text-sm text-slate-300 leading-relaxed">
+            <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
               Are you sure you want to mark this project as completed? This will make the project eligible for Reviews & Ratings.
             </p>
 
@@ -945,7 +945,7 @@ const ProjectDetails = () => {
                 size="md"
                 onClick={handleCompleteProject}
                 disabled={completing}
-                className="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold"
+                className="bg-emerald-600 hover:bg-emerald-500 text-white dark:text-slate-950 font-bold"
               >
                 {completing ? 'Completing...' : 'Mark as Completed'}
               </Button>
