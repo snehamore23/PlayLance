@@ -98,7 +98,8 @@ const getProjects = async (req, res, next) => {
 
     // Filter by category
     if (req.query.category) {
-      filter.category = { $regex: new RegExp(req.query.category, 'i') };
+      const escapedCategory = String(req.query.category).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      filter.category = { $regex: new RegExp(escapedCategory, 'i') };
     }
 
     // Filter by status
@@ -149,7 +150,7 @@ const getProjectById = async (req, res, next) => {
     }
 
     const project = await Project.findById(req.params.id)
-      .populate('client', 'name email');
+      .populate('client', 'name email profileImage role');
 
     if (!project) {
       return res.status(404).json({
@@ -158,9 +159,31 @@ const getProjectById = async (req, res, next) => {
       });
     }
 
+    const Application = require('../models/Application');
+    let acceptedApp = await Application.findOne({
+      project: req.params.id,
+      status: 'accepted',
+    }).populate('freelancer', 'name email profileImage role rating');
+
+    if (!acceptedApp && project.applications && project.applications.length > 0) {
+      acceptedApp = await Application.findOne({
+        _id: { $in: project.applications },
+        status: 'accepted',
+      }).populate('freelancer', 'name email profileImage role rating');
+    }
+
+    const projectObj = project.toObject();
+    if (acceptedApp) {
+      projectObj.acceptedApplication = acceptedApp;
+      projectObj.acceptedFreelancer = acceptedApp.freelancer;
+    } else {
+      projectObj.acceptedApplication = null;
+      projectObj.acceptedFreelancer = null;
+    }
+
     return res.status(200).json({
       success: true,
-      project,
+      project: projectObj,
     });
   } catch (error) {
     next(error);
@@ -374,12 +397,98 @@ const getMyProjects = async (req, res, next) => {
   }
 };
 
+// ──────────────────────────────────────────────
+// @desc    Mark a project as completed
+// @route   PUT /api/projects/:id/complete
+// @access  Private (client — project owner only)
+// ──────────────────────────────────────────────
+const completeProject = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // 1. Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid project ID',
+      });
+    }
+
+    // 2. Find project
+    const project = await Project.findById(id);
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: 'Project not found.',
+      });
+    }
+
+    // 3. Verify user is the project owner (client)
+    if (project.client.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: 'Only the project owner can mark this project as completed.',
+      });
+    }
+
+    // 4. Check project status
+    if (project.status === 'completed') {
+      return res.status(400).json({
+        success: false,
+        message: 'Project is already completed.',
+      });
+    }
+
+    if (project.status === 'open' || project.status !== 'in-progress') {
+      return res.status(400).json({
+        success: false,
+        message: 'Only in-progress projects can be marked as completed.',
+      });
+    }
+
+    // 5. Update status to completed
+    project.status = 'completed';
+    await project.save();
+
+    // 6. Send notification to accepted freelancer if exists
+    try {
+      const Application = require('../models/Application');
+      const createNotification = require('../utils/createNotification');
+      const acceptedApp = await Application.findOne({ project: id, status: 'accepted' });
+      if (acceptedApp && acceptedApp.freelancer) {
+        await createNotification({
+          recipient: acceptedApp.freelancer,
+          sender: req.user._id,
+          type: 'PROJECT_COMPLETED',
+          message: `Project "${project.title}" has been marked as completed.`,
+          relatedProject: project._id,
+          relatedId: project._id,
+        }).catch(() => {});
+      }
+    } catch (e) {
+      console.error('Error sending project completion notification:', e);
+    }
+
+    const updatedProject = await Project.findById(id).populate('client', 'name email');
+
+    return res.status(200).json({
+      success: true,
+      message: 'Project marked as completed successfully',
+      project: updatedProject,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createProject,
   getProjects,
   getMyProjects,
   getProjectById,
   updateProject,
+  completeProject,
   deleteProject,
 };
 
