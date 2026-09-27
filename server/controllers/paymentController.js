@@ -103,8 +103,8 @@ const createCheckoutSession = async (req, res, next) => {
         clientId: req.user._id.toString(),
         freelancerId: acceptedApplication.freelancer.toString(),
       },
-      success_url: `${process.env.CLIENT_URL || 'http://localhost:3000'}/payments?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.CLIENT_URL || 'http://localhost:3000'}/payments?cancelled=true`,
+      success_url: `${process.env.CLIENT_URL || 'http://localhost:5173'}/payments?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.CLIENT_URL || 'http://localhost:5173'}/payments?cancelled=true`,
     });
 
     // 8. Create a pending Payment document
@@ -224,16 +224,28 @@ const getPaymentById = async (req, res, next) => {
 // ──────────────────────────────────────────────
 const stripeWebhook = async (req, res) => {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  if (!webhookSecret) {
+    console.error('Stripe webhook error: STRIPE_WEBHOOK_SECRET is not configured.');
+    return res.status(500).json({
+      success: false,
+      message: 'Webhook error: STRIPE_WEBHOOK_SECRET is missing from server configuration',
+    });
+  }
+
+  const sig = req.headers['stripe-signature'];
+  if (!sig) {
+    console.error('Stripe webhook error: Missing stripe-signature header.');
+    return res.status(400).json({
+      success: false,
+      message: 'Webhook error: Missing stripe-signature header',
+    });
+  }
+
   let event;
 
   try {
-    if (webhookSecret) {
-      const sig = req.headers['stripe-signature'];
-      event = getStripe().webhooks.constructEvent(req.body, sig, webhookSecret);
-    } else {
-      // In development without webhook secret, parse event directly
-      event = req.body;
-    }
+    event = getStripe().webhooks.constructEvent(req.body, sig, webhookSecret);
   } catch (err) {
     console.error('Stripe webhook signature verification failed:', err.message);
     return res.status(400).json({
