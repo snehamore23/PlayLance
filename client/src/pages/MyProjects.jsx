@@ -1,15 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import api from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import Button from '../components/Button';
 
 const MyProjects = () => {
+  const { user } = useAuth();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('All');
+  const [completingId, setCompletingId] = useState(null);
+
+  const handleCompleteProject = async (projectId, projectTitle) => {
+    if (!window.confirm(`Are you sure you want to mark project "${projectTitle || 'this project'}" as completed? This will enable Reviews & Ratings.`)) {
+      return;
+    }
+    try {
+      setCompletingId(projectId);
+      const res = await api.put(`/projects/${projectId}/complete`);
+      if (res.data && res.data.success) {
+        toast.success('Project marked as completed successfully.');
+        await fetchMyProjects();
+      }
+    } catch (err) {
+      console.error('Error completing project from MyProjects:', err);
+      toast.error(err.response?.data?.message || 'Failed to mark project as completed.');
+    } finally {
+      setCompletingId(null);
+    }
+  };
 
   const fetchMyProjects = async () => {
+    if (user && user.role === 'freelancer') {
+      setLoading(false);
+      return;
+    }
     try {
       setLoading(true);
       setError(null);
@@ -29,7 +56,35 @@ const MyProjects = () => {
 
   useEffect(() => {
     fetchMyProjects();
-  }, []);
+  }, [user]);
+
+  if (user && user.role === 'freelancer') {
+    return (
+      <div className="max-w-2xl mx-auto py-12 px-4 text-center space-y-6">
+        <div className="p-8 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-slate-800 dark:text-slate-200 space-y-4 shadow-sm">
+          <div className="text-4xl">💼</div>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+            Client Workspace Page
+          </h2>
+          <p className="text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto leading-relaxed">
+            "My Projects" is reserved for client accounts to manage posted listings and proposals. As a freelancer, you can view your submitted proposals under <strong>My Applications</strong> or browse new listings in <strong>Find Projects</strong>.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <Link to="/applications">
+              <Button variant="primary" size="md">
+                My Applications 📄
+              </Button>
+            </Link>
+            <Link to="/projects">
+              <Button variant="outline" size="md">
+                Find Projects 🚀
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const filteredProjects = projects.filter((project) => {
     const status = (project.status || 'open').toLowerCase();
@@ -183,7 +238,18 @@ const MyProjects = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 pt-2 md:pt-0">
+                <div className="flex flex-wrap items-center gap-2 pt-2 md:pt-0">
+                  {project.status === 'in-progress' && (
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={() => handleCompleteProject(projectId, project.title)}
+                      disabled={completingId === projectId}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
+                    >
+                      {completingId === projectId ? 'Completing...' : 'Mark Completed ✅'}
+                    </Button>
+                  )}
                   <Link to={`/projects/${projectId}/edit`}>
                     <Button variant="outline" size="sm">
                       Edit

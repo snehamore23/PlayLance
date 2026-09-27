@@ -6,6 +6,7 @@ const {
   getMyProjects,
   getProjectById,
   updateProject,
+  completeProject,
   deleteProject,
 } = require('../controllers/projectController');
 const { getProjectApplications } = require('../controllers/applicationController');
@@ -46,6 +47,11 @@ router.get('/:projectId/applications', protect, allowRoles('client'), getProject
 // @desc    Get single project by ID
 // @access  Public
 router.get('/:id', getProjectById);
+
+// @route   PUT /api/projects/:id/complete
+// @desc    Mark a project as completed
+// @access  Private (client — owner only)
+router.put('/:id/complete', protect, allowRoles('client'), completeProject);
 
 // @route   PUT /api/projects/:id
 // @desc    Update a project

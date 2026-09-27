@@ -25,9 +25,13 @@ const Navbar = () => {
     navigate('/login');
   };
 
+  const isFreelancer = user?.role === 'freelancer';
+
   const navLinks = [
     { name: 'Find Projects', path: '/projects' },
-    { name: 'My Projects', path: '/my-projects' },
+    ...(isFreelancer
+      ? [{ name: 'My Applications', path: '/applications' }]
+      : [{ name: 'My Projects', path: '/my-projects' }]),
     { name: 'Dashboard', path: '/dashboard' },
     { name: 'Messages', path: '/messages' },
   ];

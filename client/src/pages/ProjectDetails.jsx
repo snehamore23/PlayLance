@@ -20,13 +20,17 @@ const ProjectDetails = () => {
   const [hasApplied, setHasApplied] = useState(false);
   const [paying, setPaying] = useState(false);
 
+  // Completion state
+  const [showCompleteModal, setShowCompleteModal] = useState(false);
+  const [completing, setCompleting] = useState(false);
+
   // Reviews state
   const [reviews, setReviews] = useState([]);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
   const [submittingReview, setSubmittingReview] = useState(false);
-  const [acceptedFreelancerId, setAcceptedFreelancerId] = useState(null);
+  const [fetchedAcceptedFreelancerId, setFetchedAcceptedFreelancerId] = useState(null);
 
   // Fetch project details
   useEffect(() => {
@@ -97,23 +101,26 @@ const ProjectDetails = () => {
         console.error('Error fetching project reviews:', err);
       }
 
-      try {
-        const appRes = await api.get(`/projects/${id}/applications`);
-        if (appRes.data && appRes.data.success) {
-          const apps = appRes.data.applications || [];
-          const acc = apps.find((a) => a.status === 'accepted');
-          if (acc) {
-            const fId = typeof acc.freelancer === 'object' ? acc.freelancer?._id : acc.freelancer;
-            setAcceptedFreelancerId(fId);
+      // Only attempt to fetch applications if client owner, avoiding 403 Forbidden for freelancers
+      if (user && user.role === 'client') {
+        try {
+          const appRes = await api.get(`/projects/${id}/applications`);
+          if (appRes.data && appRes.data.success) {
+            const apps = appRes.data.applications || [];
+            const acc = apps.find((a) => a.status === 'accepted');
+            if (acc) {
+              const fId = typeof acc.freelancer === 'object' ? acc.freelancer?._id : acc.freelancer;
+              setFetchedAcceptedFreelancerId(fId);
+            }
           }
+        } catch (err) {
+          // Ignore 403 error for non-owner as acceptedFreelancer is available directly on project object
         }
-      } catch (err) {
-        console.error('Error fetching project applications:', err);
       }
     };
 
     fetchReviewsAndApp();
-  }, [id]);
+  }, [id, user]);
 
   const handleApplyClick = () => {
     if (!user) {
@@ -195,20 +202,59 @@ const ProjectDetails = () => {
     }
   };
 
+  const currentUserId = String(user?.id || user?._id || "");
+
+  const clientId = String(
+    project?.client?.id ||
+    project?.client?._id ||
+    project?.client ||
+    ""
+  );
+
+  const acceptedFreelancerId = String(
+    project?.acceptedFreelancer?.id ||
+    project?.acceptedFreelancer?._id ||
+    project?.acceptedFreelancer ||
+    fetchedAcceptedFreelancerId ||
+    ""
+  );
+
+  const isCompleted = project?.status === "completed";
+
+  const isClientParticipant =
+    currentUserId !== "" &&
+    clientId !== "" &&
+    currentUserId === clientId;
+
+  const isFreelancerParticipant =
+    currentUserId !== "" &&
+    acceptedFreelancerId !== "" &&
+    currentUserId === acceptedFreelancerId;
+
+  const isParticipant =
+    isClientParticipant || isFreelancerParticipant;
+
+  const targetUserId = isClientParticipant
+    ? acceptedFreelancerId
+    : isFreelancerParticipant
+      ? clientId
+      : "";
+
+  const hasReviewed = reviews.some(
+    (review) =>
+      String(review.reviewer?.id || review.reviewer?._id || review.reviewer) ===
+      currentUserId
+  );
+
+  const canReview =
+    isCompleted &&
+    isParticipant &&
+    targetUserId !== "" &&
+    !hasReviewed;
+
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
-    if (!user || !project) return;
-
-    const clientId = typeof project.client === 'object' ? project.client?._id : project.client;
-    let targetUserId = null;
-
-    if (user._id === clientId) {
-      targetUserId = acceptedFreelancerId;
-    } else if (user._id === acceptedFreelancerId) {
-      targetUserId = clientId;
-    }
-
-    if (!targetUserId) {
+    if (!user || !project || !targetUserId) {
       toast.error('Unable to determine the participant to review.');
       return;
     }
@@ -226,10 +272,16 @@ const ProjectDetails = () => {
         toast.success('Review submitted successfully! ⭐');
         setShowReviewModal(false);
         setReviewComment('');
-        // Refresh project reviews
-        const updatedRes = await api.get(`/reviews/project/${id}`);
+        // Refresh project reviews and project details
+        const [updatedRes, projRes] = await Promise.all([
+          api.get(`/reviews/project/${id}`),
+          api.get(`/projects/${id}`),
+        ]);
         if (updatedRes.data && updatedRes.data.success) {
           setReviews(updatedRes.data.reviews || []);
+        }
+        if (projRes.data && projRes.data.success) {
+          setProject(projRes.data.project);
         }
       }
     } catch (err) {
@@ -237,6 +289,29 @@ const ProjectDetails = () => {
       toast.error(err.response?.data?.message || 'Failed to submit review.');
     } finally {
       setSubmittingReview(false);
+    }
+  };
+
+  const handleCompleteProject = async () => {
+    const targetId = project?._id || id;
+    if (!targetId || completing) return;
+    try {
+      setCompleting(true);
+      const response = await api.put(`/projects/${targetId}/complete`);
+      if (response.data && response.data.success) {
+        toast.success('Project marked as completed successfully.');
+        setShowCompleteModal(false);
+        // Refresh project data
+        const updatedRes = await api.get(`/projects/${targetId}`);
+        if (updatedRes.data && updatedRes.data.success) {
+          setProject(updatedRes.data.project);
+        }
+      }
+    } catch (err) {
+      console.error('Error completing project:', err);
+      toast.error(err.response?.data?.message || 'Failed to mark project as completed. Please try again.');
+    } finally {
+      setCompleting(false);
     }
   };
 
@@ -320,24 +395,6 @@ const ProjectDetails = () => {
   const isFreelancerUser = user?.role === 'freelancer';
   const isClientUser = user?.role === 'client';
   const isOpen = status === 'open';
-
-  const rawClientId = typeof client === 'object' ? client?._id : client;
-  const clientIdStr = rawClientId ? String(rawClientId) : '';
-  const currentUserIdStr = user?._id ? String(user._id) : '';
-  const acceptedFreelancerIdStr = acceptedFreelancerId ? String(acceptedFreelancerId) : '';
-
-  const isParticipant = Boolean(
-    currentUserIdStr && (currentUserIdStr === clientIdStr || currentUserIdStr === acceptedFreelancerIdStr)
-  );
-  const hasUserReviewed = Boolean(
-    currentUserIdStr &&
-      reviews.some((r) => {
-        const revId = typeof r.reviewer === 'object' ? r.reviewer?._id : r.reviewer;
-        return revId && String(revId) === currentUserIdStr;
-      })
-  );
-  const isProjectCompleted = status === 'completed';
-  const canLeaveReview = isProjectCompleted && isParticipant && !hasUserReviewed;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -495,17 +552,33 @@ const ProjectDetails = () => {
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   Testimonials and contract feedback submitted for this project.
                 </p>
+                {!canReview && (
+                  <p className="text-xs font-medium mt-1">
+                    {!isCompleted ? (
+                      <span className="text-amber-600 dark:text-amber-400">
+                        Reviews become available once the project is completed.
+                      </span>
+                    ) : isCompleted && isParticipant && hasReviewed ? (
+                      <span className="text-emerald-600 dark:text-emerald-400">
+                        You already reviewed this project. ✓
+                      </span>
+                    ) : isCompleted && !isParticipant ? (
+                      <span className="text-slate-500 dark:text-slate-400">
+                        Only the client and hired freelancer can review this project.
+                      </span>
+                    ) : null}
+                  </p>
+                )}
               </div>
 
-              {canLeaveReview && (
-                <Button
-                  variant="primary"
-                  size="sm"
+              {canReview && (
+                <button
+                  type="button"
                   onClick={() => setShowReviewModal(true)}
-                  className="bg-amber-500 hover:bg-amber-600 text-white font-bold"
+                  className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl cursor-pointer shadow-sm text-sm transition-colors"
                 >
                   ★ Leave a Review
-                </Button>
+                </button>
               )}
             </div>
 
@@ -514,11 +587,6 @@ const ProjectDetails = () => {
                 <p className="font-semibold text-slate-700 dark:text-slate-300">
                   No reviews submitted for this project yet.
                 </p>
-                {status !== 'completed' && (
-                  <p className="text-[11px] text-slate-400">
-                    (Reviews become available once project status is completed)
-                  </p>
-                )}
               </div>
             ) : (
               <div className="space-y-4">
@@ -618,15 +686,32 @@ const ProjectDetails = () => {
               {isClientUser && (
                 <>
                   {status === 'in-progress' ? (
-                    <Button
-                      variant="primary"
-                      size="md"
-                      className="w-full bg-emerald-600 hover:bg-emerald-700 font-bold"
-                      onClick={() => handlePayNow(_id || id)}
-                      disabled={paying}
-                    >
-                      {paying ? 'Connecting to Stripe...' : 'Pay Now 💳'}
-                    </Button>
+                    <>
+                      <Button
+                        variant="primary"
+                        size="md"
+                        className="w-full bg-emerald-600 hover:bg-emerald-700 font-bold"
+                        onClick={() => handlePayNow(_id || id)}
+                        disabled={paying}
+                      >
+                        {paying ? 'Connecting to Stripe...' : 'Pay Now 💳'}
+                      </Button>
+
+                      {isClientParticipant && (
+                        <Button
+                          variant="primary"
+                          size="md"
+                          className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold flex items-center justify-center gap-1.5"
+                          onClick={() => setShowCompleteModal(true)}
+                        >
+                          ✅ Mark as Completed
+                        </Button>
+                      )}
+                    </>
+                  ) : status === 'completed' ? (
+                    <div className="w-full py-2.5 px-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-center text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                      Project Completed ✅
+                    </div>
                   ) : (
                     <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-center text-xs text-amber-700 dark:text-amber-400 font-medium">
                       Accept a proposal to enable payment
@@ -820,6 +905,52 @@ const ProjectDetails = () => {
               </Button>
             </div>
           </form>
+        </div>
+      )}
+
+      {/* Mark as Completed Confirmation Modal */}
+      {showCompleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 max-w-md w-full space-y-5 shadow-2xl">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <span>✅</span> Mark Project as Completed?
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowCompleteModal(false)}
+                className="text-slate-400 hover:text-slate-600 text-lg"
+                disabled={completing}
+              >
+                ✕
+              </button>
+            </div>
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              Are you sure you want to mark this project as completed? This will make the project eligible for Reviews & Ratings.
+            </p>
+
+            <div className="flex justify-end gap-3 pt-3">
+              <Button
+                type="button"
+                variant="ghost"
+                size="md"
+                onClick={() => setShowCompleteModal(false)}
+                disabled={completing}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                onClick={handleCompleteProject}
+                disabled={completing}
+                className="bg-emerald-600 hover:bg-emerald-700 font-bold"
+              >
+                {completing ? 'Completing...' : 'Mark as Completed'}
+              </Button>
+            </div>
+          </div>
         </div>
       )}
     </div>

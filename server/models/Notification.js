@@ -21,6 +21,7 @@ const notificationSchema = new mongoose.Schema({
         'APPLICATION_REJECTED',
         'PAYMENT_COMPLETED',
         'REVIEW_RECEIVED',
+        'PROJECT_COMPLETED',
       ],
       message: 'Invalid notification type',
     },
