@@ -11,6 +11,7 @@ const getNotifications = async (req, res, next) => {
     const notifications = await Notification.find({ recipient: req.user._id })
       .populate('sender', 'name email profileImage')
       .populate('relatedProject', 'title status')
+      .populate('relatedApplication', 'project status')
       .sort({ createdAt: -1 });
 
     return res.status(200).json({
@@ -36,6 +37,7 @@ const getUnreadNotifications = async (req, res, next) => {
     })
       .populate('sender', 'name email profileImage')
       .populate('relatedProject', 'title status')
+      .populate('relatedApplication', 'project status')
       .sort({ createdAt: -1 });
 
     return res.status(200).json({
