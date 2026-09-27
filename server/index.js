@@ -38,7 +38,7 @@ app.use((req, res, next) => {
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     success: true,
-    message: 'PayLance API is running 🚀',
+    message: 'PayLance API is running ',
   });
 });
 
@@ -60,5 +60,5 @@ app.use(errorHandler);
 // Server listen
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 PayLance server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
+  console.log(` PayLance server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
 });

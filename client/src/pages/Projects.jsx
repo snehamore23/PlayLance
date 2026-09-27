@@ -57,19 +57,19 @@ const Projects = () => {
   });
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-slate-100 bg-slate-950">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+        <h1 className="text-3xl font-black text-white tracking-tight">
           Browse Available Projects
         </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+        <p className="text-sm text-slate-400 mt-1">
           Discover verified freelance jobs on PayLance with protected escrow payments.
         </p>
       </div>
 
       {/* Search and Filters Bar */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-4">
+      <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-5 shadow-sm space-y-4">
         {/* Search Bar */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1">
@@ -80,7 +80,7 @@ const Projects = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               leftIcon={
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               }
@@ -94,16 +94,16 @@ const Projects = () => {
         </div>
 
         {/* Filter Dropdowns */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100 dark:border-slate-800">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-800">
           {/* Category Filter */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
               Category
             </label>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full text-sm rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 p-2.5 focus:border-emerald-500 focus:ring-emerald-500"
+              className="w-full text-sm rounded-xl border border-slate-700 bg-slate-900 text-white p-2.5 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-medium cursor-pointer"
             >
               {availableCategories.map((c) => (
                 <option key={c} value={c}>
@@ -115,13 +115,13 @@ const Projects = () => {
 
           {/* Status Filter */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
               Status
             </label>
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="w-full text-sm rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 p-2.5 focus:border-emerald-500 focus:ring-emerald-500 capitalize"
+              className="w-full text-sm rounded-xl border border-slate-700 bg-slate-900 text-white p-2.5 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 capitalize font-medium cursor-pointer"
             >
               {statuses.map((s) => (
                 <option key={s} value={s}>
@@ -135,23 +135,23 @@ const Projects = () => {
 
       {/* Results State */}
       {loading ? (
-        <div className="p-12 text-center text-slate-500 dark:text-slate-400 font-medium">
+        <div className="p-12 text-center text-slate-400 font-medium">
           Loading projects from PayLance...
         </div>
       ) : error ? (
-        <div className="p-6 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400 text-center space-y-3">
+        <div className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-center space-y-3">
           <p className="font-semibold">{error}</p>
           <Button variant="outline" size="sm" onClick={fetchProjects}>
             Retry
           </Button>
         </div>
       ) : filteredProjects.length === 0 ? (
-        <div className="p-12 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-3">
+        <div className="p-12 bg-slate-900/80 rounded-2xl border border-slate-800 text-center space-y-3 shadow-xs">
           <div className="text-3xl">📁</div>
-          <p className="text-lg font-bold text-slate-800 dark:text-slate-200">
+          <p className="text-lg font-bold text-white">
             No projects available yet.
           </p>
-          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+          <p className="text-xs text-slate-400 max-w-sm mx-auto">
             {projects.length === 0
               ? 'Check back later or post a new project.'
               : 'No projects match your current search and filter criteria.'}
@@ -159,9 +159,9 @@ const Projects = () => {
         </div>
       ) : (
         <>
-          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+          <div className="flex items-center justify-between text-xs text-slate-400">
             <span>
-              Showing <strong>{filteredProjects.length}</strong> of {projects.length} available project(s)
+              Showing <strong className="text-white">{filteredProjects.length}</strong> of {projects.length} available project(s)
             </span>
           </div>
 
@@ -177,3 +177,4 @@ const Projects = () => {
 };
 
 export default Projects;
+

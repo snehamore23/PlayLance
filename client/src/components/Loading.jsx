@@ -6,7 +6,7 @@ const Loading = ({ text = 'Loading PayLance...', fullScreen = false }) => {
       <div className="relative w-12 h-12">
         <div className="absolute inset-0 rounded-full border-4 border-emerald-500/20"></div>
         <div className="absolute inset-0 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin"></div>
-        <span className="absolute inset-0 flex items-center justify-center text-xs">🚀</span>
+        <span className="absolute inset-0 flex items-center justify-center text-xs"></span>
       </div>
       <p className="text-sm font-medium text-slate-600 dark:text-slate-300 animate-pulse">
         {text}
@@ -16,8 +16,8 @@ const Loading = ({ text = 'Loading PayLance...', fullScreen = false }) => {
 
   if (fullScreen) {
     return (
-      <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50">
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-6 border border-slate-100 dark:border-slate-800">
+      <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="bg-slate-900 rounded-2xl shadow-xl p-6 border border-slate-800">
           {content}
         </div>
       </div>

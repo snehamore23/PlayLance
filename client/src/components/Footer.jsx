@@ -3,24 +3,24 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-slate-900 text-slate-300 border-t border-slate-800">
+    <footer className="bg-slate-950 text-slate-300 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Brand info */}
           <div className="lg:col-span-2 space-y-4">
-            <Link to="/" className="flex items-center gap-2">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-white font-bold text-lg">
+            <Link to="/" className="flex items-center gap-2.5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 text-slate-950 font-black text-lg shadow-xs">
                 P
               </span>
-              <span className="text-xl font-extrabold tracking-tight text-white">
-                Pay<span className="text-emerald-400">Lance</span> 🚀
+              <span className="text-xl font-black tracking-tight text-white">
+                Pay<span className="text-emerald-400">Lance</span>
               </span>
             </Link>
-            <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
+            <p className="text-sm text-slate-400 leading-relaxed max-w-sm font-normal">
               The modern full-stack freelancing platform connecting ambitious clients with world-class independent talent. Secure contracts, guaranteed milestones, and streamlined collaboration.
             </p>
             <div className="flex items-center space-x-3 text-slate-400">
-              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-950/60 text-emerald-400 border border-emerald-800">
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                 ● Platform Operational
               </span>
             </div>
@@ -28,10 +28,10 @@ const Footer = () => {
 
           {/* Column: For Clients */}
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-white mb-4">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-4">
               For Clients
             </h4>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2 text-sm font-medium">
               <li>
                 <Link to="/post-project" className="hover:text-emerald-400 transition-colors">
                   Post a Project
@@ -57,10 +57,10 @@ const Footer = () => {
 
           {/* Column: For Freelancers */}
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-white mb-4">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-4">
               For Freelancers
             </h4>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2 text-sm font-medium">
               <li>
                 <Link to="/projects" className="hover:text-emerald-400 transition-colors">
                   Find Projects
@@ -86,10 +86,10 @@ const Footer = () => {
 
           {/* Column: Quick Links */}
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-white mb-4">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-4">
               Platform
             </h4>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2 text-sm font-medium">
               <li>
                 <Link to="/dashboard" className="hover:text-emerald-400 transition-colors">
                   Dashboard
@@ -114,12 +114,12 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <div className="mt-12 pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400 font-medium">
           <p>© 2026 PayLance. All rights reserved.</p>
           <div className="flex space-x-6">
-            <span className="hover:text-slate-400 cursor-pointer">Privacy Policy</span>
-            <span className="hover:text-slate-400 cursor-pointer">Terms of Service</span>
-            <span className="hover:text-slate-400 cursor-pointer">Security Guarantee</span>
+            <span className="hover:text-white cursor-pointer transition-colors">Privacy Policy</span>
+            <span className="hover:text-white cursor-pointer transition-colors">Terms of Service</span>
+            <span className="hover:text-white cursor-pointer transition-colors">Security Guarantee</span>
           </div>
         </div>
       </div>
@@ -128,3 +128,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

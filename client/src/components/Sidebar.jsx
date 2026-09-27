@@ -31,6 +31,19 @@ const Sidebar = ({ onClose }) => {
         </svg>
       ),
     },
+    ...(!isFreelancer
+      ? [
+          {
+            name: 'Post Project',
+            path: '/post-project',
+            icon: (
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            ),
+          },
+        ]
+      : []),
     {
       name: isFreelancer ? 'Find Projects' : 'Projects',
       path: '/projects',
@@ -65,7 +78,6 @@ const Sidebar = ({ onClose }) => {
     {
       name: 'Messages',
       path: '/messages',
-      badge: '3',
       icon: (
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 01-2-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
@@ -119,23 +131,23 @@ const Sidebar = ({ onClose }) => {
   };
 
   return (
-    <aside className="w-64 h-full bg-slate-900 text-slate-300 flex flex-col justify-between border-r border-slate-800">
+    <aside className="w-64 h-full bg-slate-900 text-slate-200 flex flex-col justify-between border-r border-slate-800 shadow-xl">
       <div className="flex-1 flex flex-col overflow-y-auto">
         {/* Brand header */}
         <div className="h-16 px-6 flex items-center justify-between border-b border-slate-800">
           <NavLink to="/" className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-emerald-500 to-teal-400 text-white font-bold text-base shadow-sm">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-emerald-500 to-cyan-500 text-slate-950 font-extrabold text-base shadow-sm">
               P
             </span>
-            <span className="text-lg font-bold text-white tracking-tight">
-              Pay<span className="text-emerald-400">Lance</span> 🚀
+            <span className="text-lg font-extrabold text-white tracking-tight">
+              Pay<span className="text-emerald-400">Lance</span>
             </span>
           </NavLink>
 
           {onClose && (
             <button
               onClick={onClose}
-              className="md:hidden text-slate-400 hover:text-white p-1 rounded-lg"
+              className="md:hidden text-slate-400 hover:text-white p-1 rounded-lg cursor-pointer"
               aria-label="Close sidebar"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -147,14 +159,14 @@ const Sidebar = ({ onClose }) => {
 
         {/* User info header if logged in */}
         {user && (
-          <div className="px-4 pt-4 pb-2 border-b border-slate-800/80">
-            <div className="flex items-center gap-3 p-2 rounded-xl bg-slate-800/50">
-              <div className="w-9 h-9 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+          <div className="px-4 pt-4 pb-2 border-b border-slate-800">
+            <div className="flex items-center gap-3 p-2.5 rounded-xl bg-slate-800/80 border border-slate-700/50">
+              <div className="w-9 h-9 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-sm">
                 {getInitials(user?.name)}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-white truncate">{user?.name || 'User'}</p>
-                <p className="text-xs text-slate-400 capitalize truncate">{user?.role || 'User'}</p>
+                <p className="text-sm font-bold text-white truncate">{user?.name || 'User'}</p>
+                <p className="text-xs text-emerald-400 font-medium capitalize truncate">{user?.role || 'User'}</p>
               </div>
             </div>
           </div>
@@ -162,8 +174,8 @@ const Sidebar = ({ onClose }) => {
 
         {/* Navigation list */}
         <div className="px-3 py-4 space-y-1">
-          <div className="px-3 pb-2 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-            Workspace
+          <div className="px-3 pb-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+            Workspace Navigation
           </div>
 
           {navItems.map((item) => (
@@ -172,10 +184,10 @@ const Sidebar = ({ onClose }) => {
               to={item.path}
               onClick={onClose}
               className={({ isActive }) =>
-                `flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer ${
                   isActive
-                    ? 'bg-emerald-600/15 text-emerald-400 font-semibold'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-xs'
+                    : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                 }`
               }
             >
@@ -184,7 +196,7 @@ const Sidebar = ({ onClose }) => {
                 <span>{item.name}</span>
               </div>
               {item.badge && (
-                <span className="px-2 py-0.5 text-xs rounded-full font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                <span className="px-2 py-0.5 text-xs rounded-full font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                   {item.badge}
                 </span>
               )}
@@ -197,7 +209,7 @@ const Sidebar = ({ onClose }) => {
       <div className="p-4 border-t border-slate-800">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-colors"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-colors cursor-pointer"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -210,3 +222,4 @@ const Sidebar = ({ onClose }) => {
 };
 
 export default Sidebar;
+

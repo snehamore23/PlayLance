@@ -119,16 +119,16 @@ const PostProject = () => {
     <div className="max-w-4xl mx-auto py-6 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
           Post a New Project
         </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+        <p className="text-sm text-slate-400 mt-1">
           Tell the PayLance community about your project requirements and receive competitive bids.
         </p>
       </div>
 
       {isFreelancer && (
-        <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 text-sm font-semibold flex items-center gap-2">
+        <div className="p-4 rounded-xl bg-amber-950/40 border border-amber-800/60 text-amber-300 text-sm font-semibold flex items-center gap-2">
           <span>⚠️</span>
           <span>
             You are logged in as a <strong>Freelancer</strong>. Only client accounts are allowed to post projects.
@@ -137,12 +137,12 @@ const PostProject = () => {
       )}
 
       {error && (
-        <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400 text-sm font-medium">
+        <div className="p-4 rounded-xl bg-rose-950/40 border border-rose-800/60 text-rose-300 text-sm font-medium">
           {error}
         </div>
       )}
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-10 shadow-xs">
+      <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 sm:p-10 shadow-xs">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Title */}
           <Input
@@ -159,8 +159,8 @@ const PostProject = () => {
 
           {/* Category */}
           <div className="space-y-1.5">
-            <label htmlFor="category" className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-              Project Category <span className="text-rose-500">*</span>
+            <label htmlFor="category" className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+              Project Category <span className="text-emerald-400">*</span>
             </label>
             <select
               id="category"
@@ -168,7 +168,7 @@ const PostProject = () => {
               value={formData.category}
               onChange={handleChange}
               disabled={isFreelancer || loading}
-              className="block w-full rounded-lg border border-slate-300 dark:border-slate-700 py-2.5 px-3.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 disabled:opacity-50"
+              className="block w-full rounded-xl border border-slate-700 py-2.5 px-3.5 bg-slate-900 text-slate-100 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:opacity-50 font-medium cursor-pointer"
             >
               {categories.map((cat) => (
                 <option key={cat} value={cat}>
@@ -180,8 +180,8 @@ const PostProject = () => {
 
           {/* Description */}
           <div className="space-y-1.5">
-            <label htmlFor="description" className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-              Detailed Description <span className="text-rose-500">*</span>
+            <label htmlFor="description" className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+              Detailed Description <span className="text-emerald-400">*</span>
             </label>
             <textarea
               id="description"
@@ -192,9 +192,9 @@ const PostProject = () => {
               placeholder="Outline the core deliverables, milestones, tech requirements, and any preferred architectural patterns..."
               value={formData.description}
               onChange={handleChange}
-              className="block w-full rounded-lg border border-slate-300 dark:border-slate-700 py-2.5 px-3.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 disabled:opacity-50"
+              className="block w-full rounded-xl border border-slate-700 py-2.5 px-3.5 bg-slate-900 text-slate-100 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:opacity-50 font-medium placeholder-slate-500"
             />
-            <p className="text-xs text-slate-500">Provide as much detail as possible to get accurate proposals.</p>
+            <p className="text-xs text-slate-400">Provide as much detail as possible to get accurate proposals.</p>
           </div>
 
           {/* Skills */}
@@ -227,8 +227,8 @@ const PostProject = () => {
             />
 
             <div>
-              <label htmlFor="deadline" className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
-                Estimated Deadline <span className="text-rose-500">*</span>
+              <label htmlFor="deadline" className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                Estimated Deadline <span className="text-emerald-400">*</span>
               </label>
               <input
                 type="date"
@@ -238,14 +238,14 @@ const PostProject = () => {
                 value={formData.deadline}
                 onChange={handleChange}
                 disabled={isFreelancer || loading}
-                className="block w-full rounded-lg border border-slate-300 dark:border-slate-700 py-2.5 px-3.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 disabled:opacity-50"
+                className="block w-full rounded-xl border border-slate-700 py-2.5 px-3.5 bg-slate-900 text-slate-100 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:opacity-50 font-medium"
               />
-              <p className="text-xs text-slate-500 mt-1">Target completion date.</p>
+              <p className="text-xs text-slate-400 mt-1">Target completion date.</p>
             </div>
           </div>
 
           {/* Buttons */}
-          <div className="pt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-4">
+          <div className="pt-6 border-t border-slate-800 flex items-center justify-end gap-4">
             <Button
               variant="outline"
               size="md"
@@ -261,7 +261,7 @@ const PostProject = () => {
               type="submit"
               disabled={isFreelancer || loading}
             >
-              {loading ? 'Publishing Project...' : 'Publish Project 🚀'}
+              {loading ? 'Publishing Project...' : 'Publish Project'}
             </Button>
           </div>
         </form>

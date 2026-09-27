@@ -55,6 +55,11 @@ const MyProjects = () => {
   };
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment_success') || params.get('session_id')) {
+      toast.success('Payment completed successfully! 🎉');
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
     fetchMyProjects();
   }, [user]);
 
@@ -77,7 +82,7 @@ const MyProjects = () => {
             </Link>
             <Link to="/projects">
               <Button variant="outline" size="md">
-                Find Projects 🚀
+                Find Projects 
               </Button>
             </Link>
           </div>
@@ -154,12 +159,12 @@ const MyProjects = () => {
           </Button>
         </div>
       ) : filteredProjects.length === 0 ? (
-        <div className="p-12 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-3">
+        <div className="p-12 bg-slate-900/80 rounded-2xl border border-slate-800 text-center space-y-3">
           <div className="text-3xl">📁</div>
-          <p className="text-lg font-bold text-slate-800 dark:text-slate-200">
+          <p className="text-lg font-bold text-white">
             No projects found
           </p>
-          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+          <p className="text-xs text-slate-400 max-w-sm mx-auto">
             {projects.length === 0
               ? 'You have not posted any projects yet. Click "+ Post New Project" above to create one.'
               : 'No projects found in this tab.'}
@@ -197,7 +202,7 @@ const MyProjects = () => {
             return (
               <div
                 key={projectId}
-                className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4"
+                className="bg-slate-900/80 rounded-xl border border-slate-800 p-5 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4"
               >
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">

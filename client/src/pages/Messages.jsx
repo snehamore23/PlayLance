@@ -275,12 +275,12 @@ const Messages = () => {
     : null;
 
   return (
-    <div className="h-[calc(100vh-8.5rem)] bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex overflow-hidden">
+    <div className="h-[calc(100vh-8.5rem)] min-h-[500px] bg-slate-900 rounded-2xl border border-slate-800 shadow-xl flex flex-col md:flex-row overflow-hidden animate-fade-in text-slate-100">
       {/* Sidebar: Conversations List */}
-      <div className="w-80 border-r border-slate-200 dark:border-slate-800 flex flex-col shrink-0">
-        <div className="p-4 border-b border-slate-200 dark:border-slate-800 space-y-3">
+      <div className={`w-full md:w-80 border-b md:border-b-0 md:border-r border-slate-800 flex flex-col shrink-0 bg-slate-900 ${activeConversation ? 'hidden md:flex' : 'flex'}`}>
+        <div className="p-4 border-b border-slate-800 space-y-3 bg-slate-900">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+            <h2 className="text-lg font-black text-white">
               Messages
             </h2>
             <Button
@@ -300,20 +300,20 @@ const Messages = () => {
               placeholder="Search conversations..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full text-xs rounded-lg border border-slate-300 dark:border-slate-700 p-2 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-emerald-500"
+              className="w-full text-xs rounded-xl border border-slate-700 p-2.5 bg-slate-950 text-white focus:outline-none focus:border-emerald-500 font-medium"
             />
           </div>
         </div>
 
         {/* Sidebar Content */}
-        <div className="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800">
+        <div className="flex-1 overflow-y-auto divide-y divide-slate-800">
           {loadingConversations ? (
-            <div className="p-8 text-center text-xs text-slate-500 dark:text-slate-400 font-medium space-y-2">
+            <div className="p-8 text-center text-xs text-slate-400 font-medium space-y-2">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-emerald-500 mx-auto"></div>
               <p>Loading conversations...</p>
             </div>
           ) : conversationsError ? (
-            <div className="p-4 m-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 text-xs text-center space-y-2">
+            <div className="p-4 m-3 rounded-xl bg-rose-500/10 text-rose-300 border border-rose-500/30 text-xs text-center space-y-2">
               <p>{conversationsError}</p>
               <Button
                 variant="outline"
@@ -324,8 +324,8 @@ const Messages = () => {
               </Button>
             </div>
           ) : filteredConversations.length === 0 ? (
-            <div className="p-8 text-center text-xs text-slate-500 dark:text-slate-400 space-y-3">
-              <p className="font-semibold text-slate-700 dark:text-slate-300">
+            <div className="p-8 text-center text-xs text-slate-400 space-y-3">
+              <p className="font-semibold text-white">
                 {conversations.length === 0
                   ? 'No conversations yet.'
                   : 'No conversations match your search.'}
@@ -346,8 +346,8 @@ const Messages = () => {
                   onClick={() => setActiveConversation(conv)}
                   className={`p-3.5 flex items-start gap-3 cursor-pointer transition-colors ${
                     isSelected
-                      ? 'bg-emerald-50/60 dark:bg-emerald-950/30 border-l-4 border-emerald-500'
-                      : 'hover:bg-slate-50 dark:hover:bg-slate-800/60'
+                      ? 'bg-slate-800 border-l-4 border-emerald-500'
+                      : 'hover:bg-slate-800/50'
                   }`}
                 >
                   <div className="relative shrink-0">
@@ -355,10 +355,10 @@ const Messages = () => {
                       <img
                         src={participant.profileImage}
                         alt={participant.name}
-                        className="w-10 h-10 rounded-full object-cover"
+                        className="w-10 h-10 rounded-full object-cover border border-emerald-500"
                       />
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold flex items-center justify-center text-xs">
+                      <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold flex items-center justify-center text-xs">
                         {participant.initials}
                       </div>
                     )}
@@ -366,7 +366,7 @@ const Messages = () => {
 
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between">
-                      <h4 className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                      <h4 className="text-xs font-bold text-white truncate">
                         {participant.name}
                       </h4>
                       <span className="text-[10px] text-slate-400 shrink-0 ml-1">
@@ -375,11 +375,11 @@ const Messages = () => {
                     </div>
 
                     {projectTitle ? (
-                      <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium truncate mt-0.5">
+                      <p className="text-[11px] text-emerald-400 font-semibold truncate mt-0.5">
                         📌 {projectTitle}
                       </p>
                     ) : (
-                      <p className="text-[11px] text-slate-400 dark:text-slate-500 truncate mt-0.5">
+                      <p className="text-[11px] text-slate-400 truncate mt-0.5">
                         Direct Conversation
                       </p>
                     )}
@@ -392,17 +392,17 @@ const Messages = () => {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className={`flex-1 flex-col min-w-0 bg-slate-950 ${!activeConversation ? 'hidden md:flex' : 'flex'}`}>
         {!activeConversation ? (
-          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-500 dark:text-slate-400 space-y-4">
-            <div className="w-16 h-16 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl font-bold">
+          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-400 space-y-4">
+            <div className="w-16 h-16 rounded-2xl bg-slate-900 text-emerald-400 flex items-center justify-center text-2xl font-bold border border-slate-800">
               💬
             </div>
             <div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+              <h3 className="text-lg font-black text-white">
                 Your Messages
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm">
+              <p className="text-xs text-slate-400 mt-1 max-w-sm">
                 Select a conversation from the sidebar to view messages, or start a new conversation with a client or freelancer.
               </p>
             </div>
@@ -420,24 +420,34 @@ const Messages = () => {
         ) : (
           <>
             {/* Active Chat Header */}
-            <div className="h-16 px-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900 shrink-0">
+            <div className="h-16 px-4 sm:px-6 border-b border-slate-800 flex items-center justify-between bg-slate-900 shrink-0">
               <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setActiveConversation(null)}
+                  className="md:hidden p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 cursor-pointer"
+                  title="Back to conversation list"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
                 {activeParticipant?.profileImage ? (
                   <img
                     src={activeParticipant.profileImage}
                     alt={activeParticipant.name}
-                    className="w-9 h-9 rounded-full object-cover"
+                    className="w-9 h-9 rounded-full object-cover border border-emerald-500"
                   />
                 ) : (
-                  <div className="w-9 h-9 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold flex items-center justify-center text-xs">
+                  <div className="w-9 h-9 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold flex items-center justify-center text-xs">
                     {activeParticipant?.initials}
                   </div>
                 )}
-                <div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                <div className="min-w-0">
+                  <h3 className="text-sm font-black text-white truncate">
                     {activeParticipant?.name}
                   </h3>
-                  <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                  <p className="text-[11px] text-emerald-400 font-semibold truncate">
                     {activeConversation.project?.title
                       ? `Project: ${activeConversation.project.title}`
                       : activeParticipant?.email || 'Direct Conversation'}
@@ -447,14 +457,14 @@ const Messages = () => {
             </div>
 
             {/* Messages Stream */}
-            <div className="flex-1 p-6 overflow-y-auto space-y-4 bg-slate-50/50 dark:bg-slate-950/50">
+            <div className="flex-1 p-6 overflow-y-auto space-y-4 bg-slate-950">
               {loadingMessages ? (
-                <div className="p-12 text-center text-xs text-slate-500 dark:text-slate-400 space-y-2">
+                <div className="p-12 text-center text-xs text-slate-400 space-y-2">
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-emerald-500 mx-auto"></div>
                   <p>Loading messages...</p>
                 </div>
               ) : messagesError ? (
-                <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400 text-center space-y-2 text-xs">
+                <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-center space-y-2 text-xs">
                   <p className="font-semibold">{messagesError}</p>
                   <Button
                     variant="outline"
@@ -465,8 +475,8 @@ const Messages = () => {
                   </Button>
                 </div>
               ) : messages.length === 0 ? (
-                <div className="p-12 text-center text-slate-500 dark:text-slate-400 space-y-2">
-                  <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                <div className="p-12 text-center text-slate-400 space-y-2">
+                  <p className="text-sm font-bold text-white">
                     No messages yet in this conversation.
                   </p>
                   <p className="text-xs">
@@ -489,15 +499,15 @@ const Messages = () => {
                       className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}
                     >
                       {!isMe && senderName && (
-                        <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 mb-0.5 px-1">
+                        <span className="text-[10px] font-bold text-slate-400 mb-0.5 px-1">
                           {senderName}
                         </span>
                       )}
                       <div
                         className={`max-w-md rounded-2xl px-4 py-2.5 text-sm shadow-xs break-words ${
                           isMe
-                            ? 'bg-emerald-600 text-white rounded-br-xs'
-                            : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-bl-xs'
+                            ? 'bg-emerald-600 text-slate-950 font-semibold rounded-br-xs'
+                            : 'bg-slate-900 text-slate-100 border border-slate-800 rounded-bl-xs font-medium'
                         }`}
                       >
                         {msg.message}
@@ -515,7 +525,7 @@ const Messages = () => {
             {/* Input Form */}
             <form
               onSubmit={handleSendMessage}
-              className="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex items-center gap-3 shrink-0"
+              className="p-4 bg-slate-900 border-t border-slate-800 flex items-center gap-3 shrink-0"
             >
               <input
                 type="text"
@@ -523,7 +533,7 @@ const Messages = () => {
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 disabled={sendingMessage}
-                className="flex-1 text-sm rounded-lg border border-slate-300 dark:border-slate-700 py-2.5 px-4 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 disabled:opacity-50"
+                className="flex-1 text-sm rounded-xl border border-slate-700 py-2.5 px-4 bg-slate-950 text-white focus:outline-none focus:border-emerald-500 disabled:opacity-50 font-medium"
               />
               <Button
                 variant="primary"
@@ -531,7 +541,7 @@ const Messages = () => {
                 type="submit"
                 disabled={!inputMessage.trim() || sendingMessage}
               >
-                {sendingMessage ? 'Sending...' : 'Send 🚀'}
+                {sendingMessage ? 'Sending...' : 'Send'}
               </Button>
             </form>
           </>
@@ -540,30 +550,30 @@ const Messages = () => {
 
       {/* New Conversation Modal */}
       {showNewChatModal && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl max-w-md w-full p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-slate-900 rounded-2xl border border-slate-800 shadow-xl max-w-md w-full p-6 space-y-4 text-white">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <h3 className="text-lg font-black text-white">
                 Start New Conversation
               </h3>
               <button
                 onClick={() => setShowNewChatModal(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg font-bold"
+                className="text-slate-400 hover:text-white text-lg font-bold"
               >
                 ✕
               </button>
             </div>
 
             {newChatError && (
-              <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 text-xs">
+              <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-semibold">
                 {newChatError}
               </div>
             )}
 
             <form onSubmit={handleModalSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
-                  Participant User ID <span className="text-rose-500">*</span>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                  Participant User ID <span className="text-rose-400">*</span>
                 </label>
                 <input
                   type="text"
@@ -571,7 +581,7 @@ const Messages = () => {
                   placeholder="Enter User ObjectId (e.g. 6500...)"
                   value={newParticipantId}
                   onChange={(e) => setNewParticipantId(e.target.value)}
-                  className="w-full text-sm rounded-lg border border-slate-300 dark:border-slate-700 p-2.5 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full text-sm rounded-xl border border-slate-700 p-2.5 bg-slate-950 text-white focus:outline-none focus:border-emerald-500 font-medium"
                 />
                 <p className="text-[11px] text-slate-400 mt-1">
                   The MongoDB ObjectId of the user you want to chat with.
@@ -579,7 +589,7 @@ const Messages = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
                   Project ID (Optional)
                 </label>
                 <input
@@ -587,14 +597,14 @@ const Messages = () => {
                   placeholder="Enter Project ObjectId (optional)"
                   value={newProjectId}
                   onChange={(e) => setNewProjectId(e.target.value)}
-                  className="w-full text-sm rounded-lg border border-slate-300 dark:border-slate-700 p-2.5 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full text-sm rounded-xl border border-slate-700 p-2.5 bg-slate-950 text-white focus:outline-none focus:border-emerald-500 font-medium"
                 />
                 <p className="text-[11px] text-slate-400 mt-1">
                   Optional: Associate this conversation with a specific project.
                 </p>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
                 <Button
                   variant="outline"
                   size="md"
@@ -621,4 +631,5 @@ const Messages = () => {
 };
 
 export default Messages;
+
 

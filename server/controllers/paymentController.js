@@ -103,7 +103,7 @@ const createCheckoutSession = async (req, res, next) => {
         clientId: req.user._id.toString(),
         freelancerId: acceptedApplication.freelancer.toString(),
       },
-      success_url: `${process.env.CLIENT_URL || 'http://localhost:5173'}/payments?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${process.env.CLIENT_URL || 'http://localhost:5173'}/my-projects?payment_success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.CLIENT_URL || 'http://localhost:5173'}/payments?cancelled=true`,
     });
 

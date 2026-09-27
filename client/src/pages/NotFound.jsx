@@ -7,7 +7,7 @@ const NotFound = () => {
     <div className="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="text-center space-y-6 max-w-md mx-auto">
         <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 text-4xl shadow-inner border border-emerald-200 dark:border-emerald-800">
-          🚀
+          
         </div>
 
         <div className="space-y-2">

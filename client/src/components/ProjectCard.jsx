@@ -26,21 +26,19 @@ const ProjectCard = ({ project }) => {
       ? `$${budget.toLocaleString()}`
       : budget || 'N/A';
 
-  const formattedDeadline = deadline
-    ? new Date(deadline).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      })
-    : 'N/A';
+  const formatValidDate = (dateVal, fallback = 'No deadline') => {
+    if (!dateVal) return fallback;
+    const dateObj = new Date(dateVal);
+    if (isNaN(dateObj.getTime())) return fallback;
+    return dateObj.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  };
 
-  const formattedPostedAt = createdAt
-    ? new Date(createdAt).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      })
-    : 'Recently';
+  const formattedDeadline = formatValidDate(deadline, 'No deadline');
+  const formattedPostedAt = formatValidDate(createdAt, 'Recently');
 
   const clientName =
     typeof client === 'object' && client !== null
@@ -50,26 +48,26 @@ const ProjectCard = ({ project }) => {
   const getStatusBadge = (st) => {
     const s = (st || 'open').toLowerCase();
     if (s === 'open') {
-      return 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800';
+      return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
     }
     if (s === 'in-progress') {
-      return 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800';
+      return 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30';
     }
     if (s === 'completed') {
-      return 'bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-800';
+      return 'bg-purple-500/10 text-purple-400 border-purple-500/30';
     }
-    return 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-800';
+    return 'bg-rose-500/10 text-rose-400 border-rose-500/30';
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-xs hover:shadow-md hover:border-emerald-500/40 transition-all duration-200 flex flex-col justify-between group">
+    <div className="spotlight-card rounded-2xl p-6 flex flex-col justify-between group cursor-pointer bg-slate-900/80 border border-slate-800 hover:border-slate-700 transition-all duration-200">
       <div>
-        <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-3.5">
+          <span className="inline-flex items-center px-3 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 tracking-wide">
             {category || 'General'}
           </span>
           <span
-            className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold uppercase border ${getStatusBadge(
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider border ${getStatusBadge(
               status
             )}`}
           >
@@ -78,12 +76,12 @@ const ProjectCard = ({ project }) => {
         </div>
 
         <Link to={`/projects/${projectId}`}>
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-2">
+          <h3 className="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors line-clamp-2 leading-snug">
             {title}
           </h3>
         </Link>
 
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed">
+        <p className="mt-2.5 text-sm text-slate-400 line-clamp-3 leading-relaxed">
           {description}
         </p>
 
@@ -92,7 +90,7 @@ const ProjectCard = ({ project }) => {
             {skills.map((skill, index) => (
               <span
                 key={index}
-                className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
+                className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700"
               >
                 {typeof skill === 'string' ? skill : String(skill)}
               </span>
@@ -101,19 +99,19 @@ const ProjectCard = ({ project }) => {
         )}
       </div>
 
-      <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
+      <div className="mt-6 pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+          <div className="text-xs text-slate-400 font-medium">
             Due: {formattedDeadline} • Posted: {formattedPostedAt}
           </div>
-          <div className="text-base font-bold text-slate-900 dark:text-white">
+          <div className="text-xl font-extrabold text-emerald-400 mt-0.5">
             {formattedBudget}
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="text-xs text-slate-500 dark:text-slate-400 hidden sm:inline">
-            By {clientName}
+          <span className="text-xs text-slate-400 hidden sm:inline font-medium">
+            By <strong className="text-slate-200">{clientName}</strong>
           </span>
           <Link to={`/projects/${projectId}`}>
             <Button size="sm" variant="primary">
@@ -127,3 +125,4 @@ const ProjectCard = ({ project }) => {
 };
 
 export default ProjectCard;
+

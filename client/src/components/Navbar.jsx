@@ -28,42 +28,43 @@ const Navbar = () => {
   const isFreelancer = user?.role === 'freelancer';
 
   const navLinks = [
+    { name: 'Home', path: '/' },
     { name: 'Find Projects', path: '/projects' },
     ...(isFreelancer
       ? [{ name: 'My Applications', path: '/applications' }]
       : [{ name: 'My Projects', path: '/my-projects' }]),
     { name: 'Dashboard', path: '/dashboard' },
     { name: 'Messages', path: '/messages' },
+    { name: 'Notifications', path: '/notifications' },
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md">
+    <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-md shadow-lg shadow-black/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Brand Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 text-white font-bold text-xl shadow-md shadow-emerald-500/20 group-hover:scale-105 transition-transform">
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 text-slate-950 font-extrabold text-xl shadow-md shadow-emerald-500/20 group-hover:scale-105 transition-transform">
               P
             </span>
             <div className="flex items-center">
-              <span className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-                Pay<span className="text-emerald-500">Lance</span>
+              <span className="text-xl font-extrabold tracking-tight text-white">
+                Pay<span className="text-emerald-400">Lance</span>
               </span>
-              <span className="ml-1 text-sm">🚀</span>
             </div>
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-1 lg:space-x-3">
+          <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
             {navLinks.map((link) => (
               <NavLink
                 key={link.path}
                 to={link.path}
                 className={({ isActive }) =>
-                  `px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  `px-3 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${
                     isActive
-                      ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40'
-                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800'
+                      ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-900'
                   }`
                 }
               >
@@ -74,19 +75,22 @@ const Navbar = () => {
 
           {/* Action Buttons */}
           <div className="hidden md:flex items-center gap-3">
-            <Link to="/post-project">
-              <Button size="sm" variant="outline">
-                Post a Project
-              </Button>
-            </Link>
+            {/* HIDE Post a Project button for Freelancers */}
+            {!isFreelancer && (
+              <Link to="/post-project">
+                <Button size="sm" variant="primary">
+                  + Post Project
+                </Button>
+              </Link>
+            )}
 
             {user ? (
               <>
                 <Link
                   to="/profile"
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold text-slate-200 hover:bg-slate-900 transition-colors cursor-pointer border border-slate-800"
                 >
-                  <span className="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-xs shadow-sm">
+                  <span className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-xs">
                     {getInitials(user.name)}
                   </span>
                   <span className="max-w-[120px] truncate">{user.name || 'User'}</span>
@@ -95,7 +99,7 @@ const Navbar = () => {
                   size="sm"
                   variant="ghost"
                   onClick={handleLogout}
-                  className="text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+                  className="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10"
                 >
                   Logout
                 </Button>
@@ -120,7 +124,7 @@ const Navbar = () => {
           <div className="flex md:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none"
+              className="p-2 rounded-lg text-slate-300 hover:bg-slate-900 focus:outline-none cursor-pointer"
               aria-label="Toggle menu"
             >
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -137,7 +141,7 @@ const Navbar = () => {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 pt-3 pb-6 space-y-3">
+        <div className="md:hidden border-t border-slate-800 bg-slate-950 px-4 pt-3 pb-6 space-y-3 shadow-xl">
           <div className="space-y-1">
             {navLinks.map((link) => (
               <NavLink
@@ -145,10 +149,10 @@ const Navbar = () => {
                 to={link.path}
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
-                  `block px-3 py-2 rounded-lg text-base font-medium ${
+                  `block px-3 py-2 rounded-lg text-base font-semibold ${
                     isActive
-                      ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40'
-                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                      ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20'
+                      : 'text-slate-300 hover:bg-slate-900'
                   }`
                 }
               >
@@ -157,21 +161,23 @@ const Navbar = () => {
             ))}
           </div>
 
-          <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-2">
-            <Link to="/post-project" onClick={() => setMobileMenuOpen(false)}>
-              <Button size="md" variant="outline" className="w-full">
-                Post a Project
-              </Button>
-            </Link>
+          <div className="pt-4 border-t border-slate-800 flex flex-col gap-2">
+            {!isFreelancer && (
+              <Link to="/post-project" onClick={() => setMobileMenuOpen(false)}>
+                <Button size="md" variant="primary" className="w-full">
+                  + Post Project
+                </Button>
+              </Link>
+            )}
 
             {user ? (
-              <div className="space-y-2">
+              <div className="space-y-2 pt-2">
                 <Link
                   to="/profile"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-slate-200 hover:bg-slate-900 rounded-lg transition-colors border border-slate-800"
                 >
-                  <span className="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-xs">
+                  <span className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-xs">
                     {getInitials(user.name)}
                   </span>
                   <span>{user.name || 'User'}</span>
@@ -180,7 +186,7 @@ const Navbar = () => {
                   size="md"
                   variant="ghost"
                   onClick={handleLogout}
-                  className="w-full text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50"
+                  className="w-full text-rose-400 border border-rose-500/20 hover:bg-rose-500/10"
                 >
                   Logout
                 </Button>
@@ -188,7 +194,7 @@ const Navbar = () => {
             ) : (
               <div className="grid grid-cols-2 gap-2">
                 <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                  <Button size="md" variant="ghost" className="w-full border border-slate-200 dark:border-slate-700">
+                  <Button size="md" variant="outline" className="w-full">
                     Sign In
                   </Button>
                 </Link>
@@ -207,3 +213,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
