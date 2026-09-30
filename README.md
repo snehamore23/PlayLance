@@ -1,125 +1,199 @@
-# PayLance 🚀
+# 🚀 PlayLance - Full-Stack Freelancing Platform
 
-Full-Stack MERN Freelancing Platform.
+PlayLance is a modern, feature-rich MERN (MongoDB, Express, React, Node.js) stack freelancing marketplace that connects clients with skilled freelancers. From job posting and proposal submission to real-time messaging, Stripe-powered payments, and review systems, PlayLance offers a complete end-to-end platform for freelance collaboration.
 
 ---
 
-## 📁 Project Structure
+## ✨ Features
 
-```
-PayLance/
-├── client/
-│   ├── src/
-│   │   ├── assets/       # Static assets (images, icons)
-│   │   ├── components/   # Reusable UI components
-│   │   ├── context/      # React context providers
-│   │   ├── layouts/      # Page layout wrappers
-│   │   ├── pages/        # Application view pages
-│   │   │   └── Home.jsx
-│   │   ├── services/     # API and service integrations
-│   │   │   └── api.js
-│   │   ├── App.jsx       # Root router & layout
-│   │   ├── index.css     # Tailwind CSS styles
-│   │   └── main.jsx      # React DOM entry point
-│   ├── .env              # Frontend environment variables
-│   ├── index.html        # HTML template
-│   ├── package.json
-│   ├── postcss.config.js
-│   ├── tailwind.config.js
-│   └── vite.config.js
-└── server/
-    ├── config/           # Database and third-party configs
-    ├── controllers/      # Route logic handlers
-    ├── middleware/       # Custom Express middleware
-    ├── models/           # Mongoose schemas & models
-    ├── routes/           # Express router endpoints
-    ├── utils/            # Helper functions & utilities
-    ├── .env              # Backend environment variables
-    ├── .gitignore
-    ├── index.js          # Express app entry point
-    └── package.json
-```
+- 🔐 **Authentication & Authorization**: Secure JWT authentication, password hashing with Bcrypt, role-based controls (Client vs. Freelancer), and password reset flows.
+- 💼 **Project Marketplace**: 
+  - Clients can post, edit, manage, and close projects specifying budgets, skills, deadlines, and project scope.
+  - Freelancers can browse, search, and filter available projects by category, skills, and budget range.
+- 📝 **Proposals & Bidding**:
+  - Freelancers submit detailed proposals with bid amounts, estimated timeline, and custom cover letters.
+  - Clients review applications, view freelancer profiles, and accept or reject proposals.
+- 💬 **In-App Messaging**: Interactive messaging system for seamless communication between clients and freelancers regarding project milestones and deliverables.
+- 💳 **Stripe Payments & Escrow**: Integrated Stripe Checkout for project payments, escrow holding, and transaction management.
+- ⭐ **Ratings & Reviews**: Post-project feedback system with 5-star ratings and written reviews to build platform reputation.
+- 📊 **Interactive Dashboard & Analytics**: Dynamic dashboards tailored for clients and freelancers showing active jobs, total earnings/spend, proposal status, and quick actions.
+- 🔔 **Notifications**: Real-time notifications for job applications, accepted proposals, messages, and payment updates.
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React (v18), Vite, Tailwind CSS, React Router DOM, React Hot Toast, Axios
-- **Backend**: Node.js, Express.js, Mongoose, CORS, Dotenv, Bcryptjs, JSON Web Tokens (JWT), Nodemon
+### **Frontend**
+- **Framework**: [React 18](https://react.dev/) + [Vite](https://vitejs.dev/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Routing**: [React Router DOM v6](https://reactrouter.com/)
+- **HTTP Client**: [Axios](https://axios-http.com/)
+- **UI Notifications**: [React Hot Toast](https://react-hot-toast.com/)
+
+### **Backend**
+- **Runtime**: [Node.js](https://nodejs.org/) + [Express.js](https://expressjs.com/)
+- **Database**: [MongoDB](https://www.mongodb.com/) with [Mongoose ORM](https://mongoosejs.com/)
+- **Security**: [BcryptJS](https://github.com/dcodeIO/bcrypt.js) & [JSON Web Tokens (JWT)](https://jwt.io/)
+- **Payment Processing**: [Stripe API](https://stripe.com/)
+- **Development Tooling**: [Nodemon](https://nodemon.io/), `dotenv`, `cors`
 
 ---
 
-## 🚀 Getting Started
+## 📁 Project Structure
+
+```text
+PlayLance/
+├── client/                     # Frontend React Application
+│   ├── src/
+│   │   ├── assets/             # Static graphics and branding assets
+│   │   ├── components/         # Reusable UI components (Navbar, Footer, Modals, Cards)
+│   │   ├── context/            # React context providers (AuthContext, Socket/Chat context)
+│   │   ├── layouts/            # Main application layouts
+│   │   ├── pages/              # Main route views
+│   │   │   ├── Home.jsx        # Landing page
+│   │   │   ├── Dashboard.jsx   # Client / Freelancer dashboard
+│   │   │   ├── Projects.jsx    # Browse project listings
+│   │   │   ├── ProjectDetails.jsx
+│   │   │   ├── PostProject.jsx # Create new project listing
+│   │   │   ├── Applications.jsx# Applications & proposal manager
+│   │   │   ├── Messages.jsx    # Messaging interface
+│   │   │   ├── Payments.jsx    # Payment history & escrow
+│   │   │   ├── Reviews.jsx     # Feedback & ratings
+│   │   │   ├── Profile.jsx     # User profile management
+│   │   │   └── ...
+│   │   ├── services/           # Axios API configuration & endpoints
+│   │   ├── App.jsx             # Routes & app wrapper
+│   │   ├── index.css           # Global Tailwind CSS entry
+│   │   └── main.jsx            # Application mount point
+│   ├── .env                    # Frontend environment variables
+│   ├── package.json            # Frontend dependencies
+│   ├── tailwind.config.js      # Tailwind CSS configuration
+│   └── vite.config.js          # Vite build config
+│
+└── server/                     # Backend Express API Server
+    ├── config/                 # Database connection & Stripe setup
+    ├── controllers/            # Logic handlers for business rules
+    ├── middleware/             # Auth middleware, validation, error handlers
+    ├── models/                 # Mongoose schemas (User, Project, Application, Message, Payment, Review, Notification)
+    ├── routes/                 # Express API routes
+    ├── utils/                  # Helper utilities (token generators, formatters)
+    ├── index.js                # Server entry point
+    ├── .env                    # Backend environment variables
+    └── package.json            # Backend dependencies
+```
+
+---
+
+## ⚙️ Getting Started
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v18+)
-- [MongoDB](https://www.mongodb.com/) (local instance or MongoDB Atlas)
+Ensure you have the following installed on your machine:
+- [Node.js](https://nodejs.org/) (v18.x or higher)
+- [npm](https://www.npmjs.com/) (v9.x or higher)
+- [MongoDB](https://www.mongodb.com/) (Local instance or [MongoDB Atlas](https://www.mongodb.com/cloud/atlas))
+- A [Stripe Account](https://stripe.com/) for test payment keys
 
 ---
 
-### 1. Backend Setup
+### Installation & Environment Setup
 
-Open a terminal in the `server` folder:
+#### 1. Backend Setup (`server/`)
+
+Navigate to the `server` directory and install dependencies:
 
 ```bash
 cd server
 npm install
 ```
 
-Configure your environment variables in `server/.env`:
+Create a `.env` file in the `server/` directory:
+
 ```env
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/paylance
+MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret_key
+STRIPE_SECRET_KEY=your_stripe_secret_key
+STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
 NODE_ENV=development
 ```
 
-Start the backend development server:
+Start the backend API in development mode (with Nodemon):
 
 ```bash
 npm run dev
 ```
 
-The API will be running at:
-`http://localhost:5000/`
-
-You can verify it returns:
-```json
-{
-  "message": "PayLance API is running 🚀"
-}
-```
+The API server will run at `http://localhost:5000`.
 
 ---
 
-### 2. Frontend Setup
+#### 2. Frontend Setup (`client/`)
 
-Open a second terminal in the `client` folder:
+Open a new terminal, navigate to the `client` directory and install dependencies:
 
 ```bash
 cd client
 npm install
 ```
 
-Start the frontend development server:
+Create a `.env` file in the `client/` directory:
+
+```env
+VITE_API_BASE_URL=http://localhost:5000
+```
+
+Start the Vite development server:
 
 ```bash
 npm run dev
 ```
 
-The React frontend will be accessible at:
-`http://localhost:5173`
+The React frontend will be available at `http://localhost:5173`.
 
 ---
 
-## 📜 Available Scripts
+## 🔌 API Endpoints Summary
 
-### Backend (`server/`)
-- `npm start`: Runs the server with Node.
-- `npm run dev`: Runs the server with Nodemon (auto-reloads on code changes).
+| Endpoint Range | Router | Description |
+| :--- | :--- | :--- |
+| `/api/auth` | `authRoutes.js` | User Registration, Login, Current User profile, Password Reset |
+| `/api/users` | `userRoutes.js` | Update profile details, bio, skills, hourly rate, view public profiles |
+| `/api/projects` | `projectRoutes.js` | Create, fetch, filter, update, and delete job postings |
+| `/api/applications` | `applicationRoutes.js` | Submit proposals, view project proposals, accept/reject bids |
+| `/api/messages` | `messageRoutes.js` | Create conversations, fetch messages, send chat messages |
+| `/api/payments` | `paymentRoutes.js` | Stripe Checkout session creation, escrow release, payment history |
+| `/api/reviews` | `reviewRoutes.js` | Create reviews, fetch ratings for projects and freelancers |
+| `/api/notifications` | `notificationRoutes.js` | Fetch user alerts, mark notifications as read |
+| `/api/dashboard` | `dashboardRoutes.js` | Get role-specific dashboard metrics and activity overview |
 
-### Frontend (`client/`)
-- `npm run dev`: Runs the Vite development server.
-- `npm run build`: Bundles the React application for production.
-- `npm run preview`: Locally previews the production build.
+---
+
+## 📜 Scripts Reference
+
+### Backend (`/server`)
+- `npm run dev`: Runs server with hot reloading via Nodemon.
+- `npm start`: Runs production server using standard Node.js.
+
+### Frontend (`/client`)
+- `npm run dev`: Launches Vite dev server.
+- `npm run build`: Generates production-ready bundle.
+- `npm run preview`: Serves production build locally for testing.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! If you'd like to improve PlayLance:
+1. Fork the repository.
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4. Push to the branch (`git push origin feature/AmazingFeature`).
+5. Open a Pull Request.
+
+---
+
+## 📄 License
+
+This project is licensed under the [ISC License](LICENSE).
